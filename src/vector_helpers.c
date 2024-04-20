@@ -19,7 +19,7 @@ double	vector_len(t_coord v)
 }
 
 //to get point between two vectors -> good for lighting and shading
-double	vector_point(t_coord v1, t_coord v2)
+double	vector_point(t_coord v1, t_coord v2) //dot product
 {
 	return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
 }

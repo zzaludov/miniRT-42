@@ -23,7 +23,7 @@
 # include "../MLX42/include/MLX42/MLX42.h"
 # include "../FT_LIBRARY/ft_library.h"
 # define EPSILON 1e-6
-# define WIDTH 720
+# define WIDTH 1000
 # define HEIGHT 600
 
 // attributes structures
