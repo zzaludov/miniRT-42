@@ -66,21 +66,24 @@ t_coord	rotate_ray_direction(t_coord dir, t_coord old)
 // Function to calculate the direction of the ray in p->scene->c space
 t_coord	calculate_ray_direction(int pixel_x, int pixel_y, double fov, t_coord dir)
 {
-	t_coord	ray_dir; // another coord
+	//t_coord	pixel_pos;
+	t_coord	ray_dir;
 	double	width;
 	double	height;
-	double	lens_correction;
+	double	fov_to_height;
 	double	phi;
 	double	omega;
 
 	width = (double)WIDTH;
 	height = (double)HEIGHT;
-	lens_correction = tan(deg_to_rad(fov * 0.5));     // should be cos?
-	ray_dir.x = lens_correction * (width / height) * (2.0 * (pixel_x + 0.5) / width - 1.0);
-	ray_dir.y = lens_correction * ((2.0 * (pixel_y + 0.5) / height - 1.0));
-	ray_dir.z = -1.0;                                      // Assuming a simple perspective projection
+	fov_to_height = tan(deg_to_rad(fov * 0.5));     // should be cos?
+	// PIXEL_POS - subtract the camera position?
+	ray_dir.x = fov_to_height * (width / height) * (2.0 * (pixel_x + 0.5) / width - 1.0);
+	ray_dir.y = fov_to_height * (2.0 * (pixel_y + 0.5) / height - 1.0); // (1.0 - 2.0 * (pixel_y + 0.5) / height)
+	ray_dir.z = -1.0;
 	//ray_dir = rotate_ray_direction(dir, ray_dir);
 
+	//is vector normilized?
 	phi = acos(dir.z / sqrt(dir.x * dir.x + dir.z * dir.z));
 	omega = atan(dir.y / sqrt((dir.x * dir.x) + (dir.z * dir.z)));
 	if (dir.x < 0)
@@ -89,7 +92,7 @@ t_coord	calculate_ray_direction(int pixel_x, int pixel_y, double fov, t_coord di
 	ray_dir.z = ray_dir.x * sin(phi) + ray_dir.z * cos(phi); // changed x
 	
 	ray_dir.x = ray_dir.x * (cos(omega) + ray_dir.y * sin(omega));
-	ray_dir.y = -sin(omega) * (ray_dir.x * ray_dir.x + ray_dir.z * ray_dir.z) + ray_dir.y * cos(omega); //
+	ray_dir.y = -sin(omega) * (ray_dir.x * ray_dir.x + ray_dir.z * ray_dir.z) + ray_dir.y * cos(omega);
 	ray_dir.z = ray_dir.z * (ray_dir.y * sin(omega) + cos(omega));
 
 	//angle = acos(1 / sqrt(dir.y * dir.y + 1));
