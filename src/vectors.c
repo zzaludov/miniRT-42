@@ -68,7 +68,7 @@ t_coord	vector_subtract(t_coord v1, t_coord v2)
 	return (v);
 }
 
-// cross_product, vektorovy soucin
+// cross_product
 t_coord	vector_produkt(t_coord v1, t_coord v2)
 {
 	t_coord	v;

@@ -11,80 +11,42 @@
 /* ************************************************************************** */
 
 #include "minirt.h"
-/*
-//combination of horizontal and vertical movements -> 
-//determine direction of ray from p->scene->c
-//creates a ray from a p->scene->c's perspective based on
-//screen coordinates(x and y)
-t_ray	ray_creation(t_p->scene->c *p->scene->c, double x, double y)
+
+// CREATING RAY PROCESS:
+
+// 1. Normilizing pixel position
+//    NCD_x = (x + 0.5) / width
+//    NCD_y = (y + 0.5) / height
+
+// 2. Remapping the pixels from range [0:1] to [-1;1]
+//    pixelscreen_x = 2 * NCD_x - 1  
+//    pixelscreen_y = 1 - 2 * NCD_y
+
+// 3. Adjust to aspect ratio of screen
+//    ratio = width / height
+//    pixelcamera_x = (2 * pixelscreen_x - 1) * ratio * tan(fov / 2)
+//    pixelcamera_y = 1 - 2 * pixelscreen_y * tan(fov / 2)
+
+//    camera_space = (pixelcamera_x, pixelcamera_y, -1)
+t_coord	creating_ray(int pixel_x, int pixel_y, double fov, t_coord dir)
 {
-	t_ray		ray;
-	t_vector	move_hor;
-	t_vector	move_ver;
-
-	move_hor = vector_scaling(p->scene->c->horizontal, x);
-	move_ver = vector_scaling(p->scene->c->vertical, y);
-	ray.origin = p->scene->c->origin;
-	ray.direction = vector_addition(p->scene->c->bottom_left, move_hor);
-	ray.direction = vector_addition(ray.direction, move_ver);
-	ray.direction = vector_subtraction(ray.direction, p->scene->c->origin);
-	return (ray);
-}*/
-
-t_coord	rotate_ray_direction(t_coord dir, t_coord old)
-{
-	t_coord	new;
-	double	angle;
-
-/*	angle = acos(dir.z / sqrt(dir.x * dir.x + dir.z * dir.z));
-	if (dir.x < 0)
-		angle *= -1;
-	ray_dir.x = ray_dir.x * cos(angle) + ray_dir.z * sin(angle);
-	ray_dir.z = -ray_dir.x * sin(angle) + ray_dir.z * cos(angle); // changed x
-	angle = acos(1 / sqrt(dir.y * dir.y + 1));
-	if (dir.y < 0)
-		angle *= -1;
-	//	if (dir.z < 0)
-		//	angle *= -1;
-	ray_dir.y = ray_dir.y * cos(angle) - sin(angle);
-	ray_dir.z = -ray_dir.y * sin(angle) - cos(angle);*/
-
-	angle = acos(dir.z / sqrt(dir.x * dir.x + dir.z * dir.z));
-	if (dir.x < 0)
-		angle *= -1;
-	new.x = old.x * cos(angle) + old.z * sin(angle);
-	new.z = -old.x * sin(angle) + old.z * cos(angle);
-
-	angle = acos(dir.z / sqrt(dir.y * dir.y + dir.z * dir.z));
-	//if (dir.y < 0)
-		//angle *= -1;
-
-
-	return (new);
-}
-
-// Function to calculate the direction of the ray in p->scene->c space
-t_coord	calculate_ray_direction(int pixel_x, int pixel_y, double fov, t_coord dir)
-{
-	//t_coord	pixel_pos;
+	//t_coord	camera_space;
 	t_coord	ray_dir;
 	double	width;
 	double	height;
 	double	fov_to_height;
-	double	phi;
-	double	omega;
+	//double	phi;
+	//double	omega;
 
 	width = (double)WIDTH;
 	height = (double)HEIGHT;
 	fov_to_height = tan(deg_to_rad(fov * 0.5));     // should be cos?
-	// PIXEL_POS - subtract the camera position?
 	ray_dir.x = fov_to_height * (width / height) * (2.0 * (pixel_x + 0.5) / width - 1.0);
-	ray_dir.y = fov_to_height * (2.0 * (pixel_y + 0.5) / height - 1.0); // (1.0 - 2.0 * (pixel_y + 0.5) / height)
+	ray_dir.y = fov_to_height * (1.0 - 2.0 * (pixel_y + 0.5) / height);
 	ray_dir.z = -1.0;
-	//ray_dir = rotate_ray_direction(dir, ray_dir);
 
-	//is vector normilized?
-	phi = acos(dir.z / sqrt(dir.x * dir.x + dir.z * dir.z));
+	//ray_dir = normalized(ray_dir);
+	/*phi = acos(dir.z / sqrt(dir.x * dir.x + dir.z * dir.z));
 	omega = atan(dir.y / sqrt((dir.x * dir.x) + (dir.z * dir.z)));
 	if (dir.x < 0)
 		phi *= -1;
@@ -93,7 +55,7 @@ t_coord	calculate_ray_direction(int pixel_x, int pixel_y, double fov, t_coord di
 	
 	ray_dir.x = ray_dir.x * (cos(omega) + ray_dir.y * sin(omega));
 	ray_dir.y = -sin(omega) * (ray_dir.x * ray_dir.x + ray_dir.z * ray_dir.z) + ray_dir.y * cos(omega);
-	ray_dir.z = ray_dir.z * (ray_dir.y * sin(omega) + cos(omega));
+	ray_dir.z = ray_dir.z * (ray_dir.y * sin(omega) + cos(omega));*/
 
 	//angle = acos(1 / sqrt(dir.y * dir.y + 1));
 	//if (dir.y < 0)
@@ -102,7 +64,9 @@ t_coord	calculate_ray_direction(int pixel_x, int pixel_y, double fov, t_coord di
 	//	//	angle *= -1;
 	//ray_dir.y = ray_dir.y * cos(angle) - sin(angle);
 	//ray_dir.z = -ray_dir.y * sin(angle) - cos(angle);
-	ray_dir = normalized(ray_dir);
+	
+	printf("%f", dir.x);
+	//ray_dir = normalized(ray_dir);
 	return (ray_dir);
 }
 
@@ -184,7 +148,7 @@ void	pixeling(t_pointer_mlx *p)
 
 	for (int pixel_y = 0; pixel_y < HEIGHT; pixel_y++) {
 		for (int pixel_x = 0; pixel_x < WIDTH; pixel_x++) {
-			ray_dir = calculate_ray_direction(pixel_x, pixel_y, p->scene->c->fov, p->scene->c->dir);
+			ray_dir = creating_ray(pixel_x, pixel_y, p->scene->c->fov, p->scene->c->dir);
 			find_intersection(p, pixel_x, pixel_y, ray_dir);
 			if (find_shadow(p, pixel_x, pixel_y, ray_dir))
 			{

@@ -12,32 +12,6 @@
 
 #include "minirt.h"
 
-int	discriminant(double a, double b, double c, double *t)
-{
-	double	discriminant;
-	double	x1;
-	double	x2;
-
-	discriminant = b * b - 4 * a * c;
-
-	if (discriminant < 0)
-		return (0);
-	else if (discriminant == 0)
-		*t = -b / (2.0 * a);
-	else
-	{
-		x1 = (-b - sqrt(discriminant)) / (2.0 * a);
-		x2 = (-b + sqrt(discriminant)) / (2.0 * a);
-		if (x1 < 0 && x2 < 0)
-			return (0);
-		else if (b < 0)
-			*t = x1;
-		else
-			*t = x2;
-	}
-	return (1);
-}
-
 // count components in array
 int	arrlen(char **array)
 {
