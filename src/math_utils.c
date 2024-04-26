@@ -30,9 +30,9 @@ int	discriminant(double a, double b, double c, double *t)
 		x2 = (-b + sqrt(discriminant)) / (2.0 * a);
 		if (x1 < 0 && x2 < 0)
 			return (0);
-		else if (b < 0)  // inspect this condition
+		else if (b < 0)  // (x2 < 0 || x1 < x2) 
 			*t = x1;
-		else
+		else             // (x1 < 0 || x1 > x2) 
 			*t = x2;
 	}
 	return (1);
