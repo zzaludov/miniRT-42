@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minirt.h"
-//pretty self-explanatory -> creates 4D vector
+
 t_coord	create_vector(double x, double y, double z)
 {
 	t_coord	v;
@@ -19,13 +19,10 @@ t_coord	create_vector(double x, double y, double z)
 	v.x = x;
 	v.y = y;
 	v.z = z;
-//	v.w = 1;
 	return (v);
 }
 
-// sc = scalar -> changes len without changing direction 
-// sc negative = reverses direction of vector, sc <0-1> 
-//shrinking, sc > 1 scaling up
+
 t_coord	vector_scale(t_coord v, double sc)
 {
 	t_coord	v1;
@@ -36,7 +33,6 @@ t_coord	vector_scale(t_coord v, double sc)
 	return (v1);
 }
 
-//creating normalized vectors
 t_coord	normalized(t_coord v)
 {
 	double	len;
@@ -47,7 +43,6 @@ t_coord	normalized(t_coord v)
 	return (vector_scale(v, 1 / len));
 }
 
-//we will use it for determining direction of vectors
 t_coord	vector_add(t_coord v1, t_coord v2)
 {
 	t_coord	v;
