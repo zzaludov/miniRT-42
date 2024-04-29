@@ -103,7 +103,6 @@ void	read_map_hook(void *param)
 		p->pixel_rgb[i] = (t_color *) malloc (HEIGHT * sizeof(t_color));
 		while (j < HEIGHT)
 		{
-//			p->pixel_rgb[i][j++] = 0xFFFFFF00;
 			p->pixel_rgb[i][j].r = -1;
 			p->pixel_rgb[i][j].g = -1;
 			p->pixel_rgb[i][j++].b = -1;
