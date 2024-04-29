@@ -42,22 +42,21 @@ int	intersect_sphere(t_coord ray_org, t_coord ray_dir, t_sphere *sp, double *t)
 	double	a;
 	double	b;
 	double	c;
-	//double	r;
+	double	r;
 
 	vector = vector_subtract(ray_org, sp->pos);
-	//r = sp->diameter / 2;
+	r = sp->diameter / 2;
 
 	a = vector_point(ray_dir, ray_dir);
 	b = 2.0 * vector_point(vector, ray_dir);
-	c = vector_point(vector, vector) - sp->diameter * sp->diameter;
-	//c = vector_point(vector, vector) - sqrt(r);
+	c = vector_point(vector, vector) - sqrt(r);
 	return (discriminant(a, b, c, t));
 }
 
 // intersection point:
 // p = ray_org + ray_dir * t
 // vector from disk center to intersection point:
-// v = pl.dir - pl.org
+// v = pl.dir - pl.pos
 // sqrt distance from disk center to intersection
 // d2 = dot(v, v)
 // distance comparason
@@ -74,8 +73,8 @@ int intersect_disk(t_coord ray_org, t_coord ray_dir, t_cylinder* cy, double* t)
 	if (intersect_plane(ray_org, ray_dir, &pl, t))  // maybe not use same t?
 	{
 		p = vector_add(ray_org, vector_scale(ray_dir, *t));
-		v = vector_add(p, vector_scale(pl.pos, -1));
-		// v = vector_subtract(pl.dir, pl.org);
+		//v = vector_add(p, vector_scale(pl.pos, -1));
+		v = vector_subtract(pl.dir, pl.pos);
 		if (sqrt(vector_point(v, v)) <= cy->diameter / 2.0)
 			return 1;
 	}
@@ -85,8 +84,8 @@ int intersect_disk(t_coord ray_org, t_coord ray_dir, t_cylinder* cy, double* t)
 	{
 		p = vector_add(ray_org, vector_scale(ray_dir, *t));
 		v = vector_add(p, vector_scale(pl.pos, -1));
-		if (sqrt(vector_point(v, v)) <= cy->diameter / 2.0)
-		//if (sqrt(vector_point(v, v)) <= sqrt(cy->diameter / 2.0))
+		//if (sqrt(vector_point(v, v)) <= cy->diameter / 2.0)
+		if (sqrt(vector_point(v, v)) <= sqrt(cy->diameter / 2.0))
 			return 1;
 	}
 	return 0;
