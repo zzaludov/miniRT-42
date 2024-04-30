@@ -28,6 +28,8 @@
 //    pixelcamera_y = 1 - 2 * pixelscreen_y * tan(fov / 2)
 
 //    camera_space = (pixelcamera_x, pixelcamera_y, -1)
+
+// https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-generating-camera-rays/generating-camera-rays.html
 t_coord	creating_ray(int pixel_x, int pixel_y, double fov, t_coord dir)
 {
 	//t_coord	camera_space;
