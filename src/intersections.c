@@ -72,20 +72,23 @@ int intersect_disk(t_coord ray_org, t_coord ray_dir, t_cylinder* cy, double* t)
 	t_plane	pl;
 	t_coord	v;
 	t_coord	p;
+	t_coord	cy_pos;
 
+	cy_pos.x = cy->pos.x;
+	cy_pos.y = cy->pos.y;
+	cy_pos.z = cy->pos.z - cy->height / 2;
 	pl.dir = cy->dir;
 	pl.rgb = cy->rgb;
-	pl.pos = cy->pos;
-	if (intersect_plane(ray_org, ray_dir, &pl, t))  // maybe not use same t?
+	pl.pos = cy_pos;
+	if (intersect_plane(ray_org, ray_dir, &pl, t))
 	{
 		p = vector_add(ray_org, vector_scale(ray_dir, *t));
 		v = vector_add(p, vector_scale(pl.pos, -1));
-		v = vector_subtract(pl.dir, pl.pos);
 		if (sqrt(vector_point(v, v)) <= cy->diameter / 2.0)
 			return 1;
 	}
 
-	pl.pos = vector_add(cy->pos, vector_scale(cy->dir, cy->height));
+	pl.pos = vector_add(cy_pos, vector_scale(cy->dir, cy->height));
 	if (intersect_plane(ray_org, ray_dir, &pl, t))
 	{
 		p = vector_add(ray_org, vector_scale(ray_dir, *t));
@@ -109,11 +112,15 @@ int intersect_disk(t_coord ray_org, t_coord ray_dir, t_cylinder* cy, double* t)
 int intersect_cylinder(t_coord ray_org, t_coord ray_dir, t_cylinder *cy, double *t)
 {
 	t_coord	vector;
+	t_coord	cy_pos;
 	double	a;
 	double	b;
 	double	c;
-	
-	vector = vector_subtract(ray_org, cy->pos);
+
+	cy_pos.x = cy->pos.x;
+	cy_pos.y = cy->pos.y;
+	cy_pos.z = cy->pos.z - cy->height / 2;
+	vector = vector_subtract(ray_org, cy_pos);
 	a = vector_point(ray_dir, ray_dir) - pow(vector_point(ray_dir, cy->dir), 2);
 	b = 2.0 * (vector_point(vector, ray_dir) - vector_point(vector, cy->dir)
 	* vector_point(ray_dir, cy->dir));	
@@ -127,15 +134,10 @@ int intersect_cylinder(t_coord ray_org, t_coord ray_dir, t_cylinder *cy, double 
 	t_coord intersection_point = vector_add(ray_org, vector_scale(ray_dir, *t));
 
 	// Check if intersection point is within the height bounds of the cylinder
-	t_coord v = vector_subtract(intersection_point, cy->pos);
+	t_coord v = vector_subtract(intersection_point, cy_pos);
 	double projection = vector_point(v, cy->dir);
 	if (projection < 0 || projection > cy->height)
 		return 0; // Intersection is outside the height bounds of the cylinder
-	//cap	
-/*	double distance_to_axis_squared = vector_point(v, v) - pow(projection, 2);
-	if (distance_to_axis_squared > pow(cy->diameter / 2.0, 2))
-		return 0; */
-
 	return 1;
 
 }
