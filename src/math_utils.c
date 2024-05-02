@@ -40,7 +40,7 @@ int	discriminant(double a, double b, double c, double *t)
 	return (1);
 }
 
-// CAMERA-TO-WORLD MATRIX
+// 1.calculate CAMERA-TO-WORLD MATRIX
 
 // | R11  R12  R13  Tx |
 // | R21  R22  R23  Ty |
@@ -58,17 +58,19 @@ int	discriminant(double a, double b, double c, double *t)
 
 // Right = Up * Forward
 // Up = (0, 1, 0)
-// Forward = normalized orientation vector
+// Forward = normalized orientation vector (dir)
+
+// 1.calculate WORLD-TO-CAMERA MATRIX (inverse matrix)
 /*
 t_coord	transformation_matrix(t_coord pos, t_coord dir)
 {
 	t_coord	up;
-	t_coord forward;
+	t_coord right;
 	t_coord	trans;
 
 	up.x = 0;
 	up.y = 1;
 	up.z = 0;
-	forward = vector_produkt(up, dir);
+	right = vector_produkt(up, dir);
 	
 }*/
