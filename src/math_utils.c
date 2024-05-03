@@ -59,6 +59,25 @@ int	discriminant(double a, double b, double c, double *t)
 // Right = Up * Forward
 // Up = (0, 1, 0)
 // Forward = normalized orientation vector
+
+// https://www.cs.cmu.edu/~16385/s17/Slides/11.1_Camera_matrix.pdf
+
+/*
+t_coord	camera_matrix(t_coord pos, t_coord dir)
+{
+	t_coord	up;
+	t_coord forward;
+	t_coord	trans;
+
+	up.x = 0;
+	up.y = 1;
+	up.z = 0;
+	forward = vector_produkt(up, dir);
+	
+}*/
+
+// https://testbook.com/maths/transformation-matrix
+
 /*
 t_coord	transformation_matrix(t_coord pos, t_coord dir)
 {
