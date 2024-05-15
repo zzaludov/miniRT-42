@@ -124,6 +124,16 @@ typedef struct s_pointer_mlx
 void		open_map(t_pointer_mlx *p);
 t_scene		*init_scene(char* file);
 
+// main_utils
+char	*validate_name(char *scene_name);
+void	validate_map(char *map_name);
+t_coord	split_xyz(char *str);
+t_color	split_rgb(char *str);
+
+// error_handling
+void	print_to_exit(char *msg);
+
+
 // utils.c
 int			discriminant(double a, double b, double c, double *t);
 int			arrlen(char **array);
