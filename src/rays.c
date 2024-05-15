@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rays.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mvocasko <mvocasko@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zzaludov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/04 13:55:52 by mvocasko          #+#    #+#             */
-/*   Updated: 2023/12/04 22:27:12 by mvocasko         ###   ########.fr       */
+/*   Created: 2023/12/04 13:55:52 by zzaludov          #+#    #+#             */
+/*   Updated: 2024/05/15 20:31:23 by zzaludov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,15 @@
 //    camera_space = (pixelcamera_x, pixelcamera_y, -1)
 
 // https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-generating-camera-rays/generating-camera-rays.html
-t_coord	creating_ray(int pixel_x, int pixel_y, double fov, t_coord dir)
+t_coord	creating_ray(int pixel_x, int pixel_y, double fov/*, t_coord dir*/)
 {
 	//t_coord	camera_space;
 	t_coord	ray_dir;
 	double	width;
 	double	height;
 	double	fov_to_height;
-	//double	phi;
-	//double	omega;
+//	double	phi;
+//	double	omega;
 
 	width = (double)WIDTH;
 	height = (double)HEIGHT;
@@ -47,8 +47,8 @@ t_coord	creating_ray(int pixel_x, int pixel_y, double fov, t_coord dir)
 	ray_dir.y = fov_to_height * (1.0 - 2.0 * (pixel_y + 0.5) / height);
 	ray_dir.z = -1.0;
 
-	//ray_dir = normalized(ray_dir);
-	/*phi = acos(dir.z / sqrt(dir.x * dir.x + dir.z * dir.z));
+	/*ray_dir = normalized(ray_dir);
+	phi = acos(dir.z / sqrt(dir.x * dir.x + dir.z * dir.z));
 	omega = atan(dir.y / sqrt((dir.x * dir.x) + (dir.z * dir.z)));
 	if (dir.x < 0)
 		phi *= -1;
@@ -59,7 +59,7 @@ t_coord	creating_ray(int pixel_x, int pixel_y, double fov, t_coord dir)
 	ray_dir.y = -sin(omega) * (ray_dir.x * ray_dir.x + ray_dir.z * ray_dir.z) + ray_dir.y * cos(omega);
 	ray_dir.z = ray_dir.z * (ray_dir.y * sin(omega) + cos(omega));*/
 	
-	printf("%f", dir.x);
+	//printf("%f", dir.x);
 	//ray_dir = normalized(ray_dir);
 	return (ray_dir);
 }
@@ -75,7 +75,7 @@ void	pixel_color(t_pointer_mlx *p, double t, int pixel_x, int pixel_y, t_color c
 	}
 }
 
-int	find_shadow(t_pointer_mlx *p, int pixel_x, int pixel_y, t_coord ray_dir)
+int	find_shadow(t_pointer_mlx *p, int pixel_x, int pixel_y, t_coord ray_dir, double distance)
 {
 	int	i;
 	double	t;
@@ -83,30 +83,40 @@ int	find_shadow(t_pointer_mlx *p, int pixel_x, int pixel_y, t_coord ray_dir)
 	i = 0;
 	while (i < p->scene->n_sp)
 	{
-		if (intersect_sphere(p->scene->l->pos, ray_dir, p->scene->sp[i], &t) && t < p->pixel_dist[pixel_x][pixel_y])
+		if (intersect_sphere(p->scene->l->pos, ray_dir, p->scene->sp[i], &t) && t < p->pixel_dist[pixel_x][pixel_y]
+			&& distance > t)
+		{
+			printf ("sphere: %f %f\n", distance, t);
 			return 0;
+		}
 		i++;
 	}
 	i = 0;
 	while (i < p->scene->n_cy)
 	{
-		if (intersect_cylinder(p->scene->l->pos, ray_dir, p->scene->cy[i], &t) && t < p->pixel_dist[pixel_x][pixel_y])
+		if (intersect_cylinder(p->scene->l->pos, ray_dir, p->scene->cy[i], &t) && t < p->pixel_dist[pixel_x][pixel_y]
+			&& distance > t)
+		{
+			printf ("cylinder: %f %f\n", distance, t);
 			return 0;
-		if (intersect_disk(p->scene->l->pos, ray_dir, p->scene->cy[i], &t) && t < p->pixel_dist[pixel_x][pixel_y])
+		}
+		if (intersect_disk(p->scene->l->pos, ray_dir, p->scene->cy[i], &t) && t < p->pixel_dist[pixel_x][pixel_y]
+			&& distance > t)
 			return 0;
 		i++;
 	}
 	i = 0;
 	while (i < p->scene->n_pl)
 	{
-		if (intersect_plane(p->scene->l->pos, ray_dir, p->scene->pl[i], &t) && t < p->pixel_dist[pixel_x][pixel_y])
+		if (intersect_plane(p->scene->l->pos, ray_dir, p->scene->pl[i], &t) && t < p->pixel_dist[pixel_x][pixel_y]
+			&& distance > t)
 			return 0;
 		i++;
 	}
 	return 1;
 }
 
-void	find_intersection(t_pointer_mlx *p, int pixel_x, int pixel_y, t_coord ray_dir)
+double	find_intersection(t_pointer_mlx *p, int pixel_x, int pixel_y, t_coord ray_dir)
 {
 	int	i;
 	double	t;
@@ -134,28 +144,50 @@ void	find_intersection(t_pointer_mlx *p, int pixel_x, int pixel_y, t_coord ray_d
 			pixel_color(p, t, pixel_x, pixel_y, p->scene->pl[i]->rgb);
 		i++;
 	}
+	return (t);
 }
+
+// https://brilliant.org/wiki/3d-coordinate-geometry-equation-of-a-line/
 
 void	pixeling(t_pointer_mlx *p)
 {
-	t_coord	ray_dir;	
+	t_coord	ray_dir;
+	t_coord	pixel;
+	double	t;
 
 	for (int pixel_y = 0; pixel_y < HEIGHT; pixel_y++) {
 		for (int pixel_x = 0; pixel_x < WIDTH; pixel_x++) {
-			ray_dir = creating_ray(pixel_x, pixel_y, p->scene->c->fov, p->scene->c->dir);
-			find_intersection(p, pixel_x, pixel_y, ray_dir);
-			if (find_shadow(p, pixel_x, pixel_y, ray_dir))
-			{
-//				printf("light\n");
-				mlx_put_pixel(p->img, pixel_x, pixel_y, light(&p->pixel_rgb[pixel_x][pixel_y], p->scene->l));
-			}
+			ray_dir = creating_ray(pixel_x, pixel_y, p->scene->c->fov/*, p->scene->c->dir*/);
+			t = find_intersection(p, pixel_x, pixel_y, ray_dir);
+//			if (t > 0)
+//			{
+				//printf ("\nt: %f\n", t);
 				
-			else
-			{
-//				printf("ambient\n");
-				mlx_put_pixel(p->img, pixel_x, pixel_y, ambient(&p->pixel_rgb[pixel_x][pixel_y], p->scene->a));
-			}
-			//find_shadow(p, pixel_x, pixel_y, ray_dir);
+				// intersection point in 3D coordinates
+				pixel = vector_scale(ray_dir, t);
+				pixel.x = pixel.x / p->scene->c->pos.x;
+				pixel.y = pixel.y / p->scene->c->pos.y;
+				pixel.z = pixel.z / p->scene->c->pos.z;
+				
+				// ray between intersection point and light
+				ray_dir = normalized(vector_subtract(pixel, p->scene->l->pos));
+				
+				// distance between intersection point and light
+				t = vector_len(vector_subtract(pixel, p->scene->l->pos));
+				//printf ("dist: %f\n", t);
+				if (find_shadow(p, pixel_x, pixel_y, ray_dir, t))
+				{
+	//				printf("light\n");
+					mlx_put_pixel(p->img, pixel_x, pixel_y, light(&p->pixel_rgb[pixel_x][pixel_y], p->scene->l));
+				}
+					
+				else
+				{
+	//				printf("ambient\n");
+					mlx_put_pixel(p->img, pixel_x, pixel_y, ambient(&p->pixel_rgb[pixel_x][pixel_y], p->scene->a));
+				}
+//			}
+			//mlx_put_pixel(p->img, pixel_x, pixel_y, light(&p->pixel_rgb[pixel_x][pixel_y], p->scene->l));
 		}
 	}
 }
