@@ -60,7 +60,7 @@ t_coord	creating_ray(int pixel_x, int pixel_y, double fov/*, t_coord dir*/)
 	ray_dir.z = ray_dir.z * (ray_dir.y * sin(omega) + cos(omega));*/
 	
 	//printf("%f", dir.x);
-	//ray_dir = normalized(ray_dir);
+	ray_dir = normalized(ray_dir);
 	return (ray_dir);
 }
 
@@ -165,9 +165,7 @@ void	pixeling(t_pointer_mlx *p)
 				
 				// intersection point in 3D coordinates
 				pixel = vector_scale(ray_dir, t);
-				pixel.x = pixel.x / p->scene->c->pos.x;
-				pixel.y = pixel.y / p->scene->c->pos.y;
-				pixel.z = pixel.z / p->scene->c->pos.z;
+				pixel = vector_add(pixel, p->scene->c->pos);
 				
 				// ray between intersection point and light
 				ray_dir = normalized(vector_subtract(pixel, p->scene->l->pos));
