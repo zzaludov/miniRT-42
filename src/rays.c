@@ -58,14 +58,6 @@ t_coord	creating_ray(int pixel_x, int pixel_y, double fov, t_coord dir)
 	ray_dir.x = ray_dir.x * (cos(omega) + ray_dir.y * sin(omega));
 	ray_dir.y = -sin(omega) * (ray_dir.x * ray_dir.x + ray_dir.z * ray_dir.z) + ray_dir.y * cos(omega);
 	ray_dir.z = ray_dir.z * (ray_dir.y * sin(omega) + cos(omega));*/
-
-	//angle = acos(1 / sqrt(dir.y * dir.y + 1));
-	//if (dir.y < 0)
-	//	angle *= -1;
-	////	if (dir.z < 0)
-	//	//	angle *= -1;
-	//ray_dir.y = ray_dir.y * cos(angle) - sin(angle);
-	//ray_dir.z = -ray_dir.y * sin(angle) - cos(angle);
 	
 	printf("%f", dir.x);
 	//ray_dir = normalized(ray_dir);

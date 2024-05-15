@@ -37,7 +37,7 @@ int	intersect_plane(t_coord ray_org, t_coord ray_dir, t_plane *plane, double *t)
 
 // a = dot (ray_dir, ray_dir)
 // b = 2 * dot (ray_org - sp->pos, ray_dir);
-// c = dot (ray_org - sp->pos, ray_org - sp->pos) - sqrt(r)
+// c = dot (ray_org - sp->pos, ray_org - sp->pos) - r * r
 
 // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-sphere-intersection.html
 int	intersect_sphere(t_coord ray_org, t_coord ray_dir, t_sphere *sp, double *t)
@@ -53,7 +53,7 @@ int	intersect_sphere(t_coord ray_org, t_coord ray_dir, t_sphere *sp, double *t)
 
 	a = vector_point(ray_dir, ray_dir);  // point or dot ?
 	b = 2.0 * vector_point(vector, ray_dir);
-	c = vector_point(vector, vector) - sqrt(r);
+	c = vector_point(vector, vector) - r * r;
 	return (discriminant(a, b, c, t));
 }
 
@@ -61,7 +61,7 @@ int	intersect_sphere(t_coord ray_org, t_coord ray_dir, t_sphere *sp, double *t)
 // p = ray_org + ray_dir * t
 // vector from disk center to intersection point:
 // v = pl.dir - pl.pos
-// sqrt distance from disk center to intersection
+// squared distance from disk center to intersection
 // d2 = dot(v, v)
 // distance comparason
 // d2 <= r * r
@@ -72,36 +72,38 @@ int intersect_disk(t_coord ray_org, t_coord ray_dir, t_cylinder* cy, double* t)
 	t_plane	pl;
 	t_coord	v;
 	t_coord	p;
+	t_coord	cy_pos;
 
-	pl.dir = cy->dir;  // is this correct?
+	cy_pos.x = cy->pos.x;
+	cy_pos.y = cy->pos.y;
+	cy_pos.z = cy->pos.z - cy->height / 2;
+	pl.dir = cy->dir;
 	pl.rgb = cy->rgb;
-	pl.pos = cy->pos;
-	if (intersect_plane(ray_org, ray_dir, &pl, t))  // maybe not use same t?
-	{
-		p = vector_add(ray_org, vector_scale(ray_dir, *t));
-		//v = vector_add(p, vector_scale(pl.pos, -1));
-		v = vector_subtract(pl.dir, pl.pos);
-		if (sqrt(vector_point(v, v)) <= cy->diameter / 2.0)
-			return 1;
-	}
-
-	pl.pos = vector_add(cy->pos, vector_scale(cy->dir, cy->height));
+	pl.pos = cy_pos;
 	if (intersect_plane(ray_org, ray_dir, &pl, t))
 	{
 		p = vector_add(ray_org, vector_scale(ray_dir, *t));
 		v = vector_add(p, vector_scale(pl.pos, -1));
-		//if (sqrt(vector_point(v, v)) <= cy->diameter / 2.0)
-		if (sqrt(vector_point(v, v)) <= sqrt(cy->diameter / 2.0))
+		if (sqrt(vector_point(v, v)) <= cy->diameter / 2.0)
+			return 1;
+	}
+
+	pl.pos = vector_add(cy_pos, vector_scale(cy->dir, cy->height));
+	if (intersect_plane(ray_org, ray_dir, &pl, t))
+	{
+		p = vector_add(ray_org, vector_scale(ray_dir, *t));
+		v = vector_add(p, vector_scale(pl.pos, -1));
+		if (sqrt(vector_point(v, v)) <= cy->diameter / 2.0)
 			return 1;
 	}
 	return 0;
 }
 
 // 1. intersection between ray and infinite cylinder
-//    infinite height cylinder: sqrt(x) + sqrt(y) = sqrt(r)
-//    a = sqrt(ray_dir.x) + sqrt(ray_dir.y)
+//    infinite height cylinder: x * x + y * y = r * r
+//    a = pow(ray_dir.x, 2) + pow(ray_dir.y, 2)
 //    b = 2 * (ray_org.x * ray_dir.x + ray_org.y * ray_dir.y)
-//    c = sqrt(ray_org.x) + sqrt(ray_org.y) - 2 * r
+//    c = pow(ray_org.x, 2) + pow(ray_org.y, 2) - 2 * r
 
 // 2. intersection with two disks
 //    cap 1: - ray_org.z / ray_dir.z
@@ -110,37 +112,32 @@ int intersect_disk(t_coord ray_org, t_coord ray_dir, t_cylinder* cy, double* t)
 int intersect_cylinder(t_coord ray_org, t_coord ray_dir, t_cylinder *cy, double *t)
 {
 	t_coord	vector;
+	t_coord	cy_pos;
 	double	a;
 	double	b;
 	double	c;
-	
-	vector = vector_subtract(ray_org, cy->pos);  // ??
-	// z needs to be 0
+
+	cy_pos.x = cy->pos.x;
+	cy_pos.y = cy->pos.y;
+	cy_pos.z = cy->pos.z - cy->height / 2;
+	vector = vector_subtract(ray_org, cy_pos);
 	a = vector_point(ray_dir, ray_dir) - pow(vector_point(ray_dir, cy->dir), 2);
-	// a = sqrt(ray_dir.x) + sqrt(ray_dir.y);
 	b = 2.0 * (vector_point(vector, ray_dir) - vector_point(vector, cy->dir)
 	* vector_point(ray_dir, cy->dir));	
-	// b = 2.0 * (ray_org.x * ray_dir.x + ray_org.y * ray_dir.y);
 	c = vector_point(vector, vector) - pow(vector_point(vector, cy->dir), 2)
 	- pow(cy->diameter / 2.0, 2);
-	// c = sqrt(ray_org.x) + sqrt(ray_org.y) - 2 * (cy->diameter / 2.0)
 
 	if (!discriminant(a, b, c, t))
 		return 0;
 
 	// Calculate intersection point
-	t_coord intersection_point = vector_add(ray_org, vector_scale(ray_dir, *t));  // update!!!!
+	t_coord intersection_point = vector_add(ray_org, vector_scale(ray_dir, *t));
 
 	// Check if intersection point is within the height bounds of the cylinder
-	t_coord v = vector_subtract(intersection_point, cy->pos);
+	t_coord v = vector_subtract(intersection_point, cy_pos);
 	double projection = vector_point(v, cy->dir);
 	if (projection < 0 || projection > cy->height)
 		return 0; // Intersection is outside the height bounds of the cylinder
-	//cap	
-/*	double distance_to_axis_squared = vector_point(v, v) - pow(projection, 2);
-	if (distance_to_axis_squared > pow(cy->diameter / 2.0, 2))
-		return 0; */
-
 	return 1;
 
 }
