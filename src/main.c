@@ -131,18 +131,25 @@ int32_t	main(int argc, char **argv)
 	t_pointer_mlx	p;
 
 	(void) argc;
-	p.map_name = ft_strdup(argv[1]);
-	mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
-	if (!mlx)
-		return (1);
-	img = mlx_new_image(mlx, WIDTH, HEIGHT);
-	if (!img || (mlx_image_to_window(mlx, img, 0, 0) < 0))
-		return (1);
-	p.mlx = mlx;
-	p.img = img;
-	mlx_loop_hook(mlx, read_map_hook, &p);
-	mlx_loop(mlx);
-	mlx_terminate(mlx);
-	free(p.map_name);
+	if (argc == 2)
+	{
+		// p.map_name = ft_strdup(argv[1]);
+		p.map_name = validate_name(argv[1]);
+		validate_map(p.map_name);
+		mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
+		if (!mlx)
+			return (1);
+		img = mlx_new_image(mlx, WIDTH, HEIGHT);
+		if (!img || (mlx_image_to_window(mlx, img, 0, 0) < 0))
+			return (1);
+		p.mlx = mlx;
+		p.img = img;
+		mlx_loop_hook(mlx, read_map_hook, &p);
+		mlx_loop(mlx);
+		mlx_terminate(mlx);
+		free(p.map_name);
+	}
+	else
+		ft_putendl_fd("Enter valid arguments: [./miniRT] [scene_name.rt]", 2);
 	return (MLX_SUCCESS);
 }
