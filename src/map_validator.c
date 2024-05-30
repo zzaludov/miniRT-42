@@ -16,14 +16,14 @@ void	validate_ambient(char **spl)
 {
 	double	light_range;
 	t_color	color;
-	
+
 	color = split_rgb(spl[2]);
 	light_range = ft_atof(spl[1]);
 	if (!light_range || light_range < 0 || light_range > 1)
 		ft_putendl_fd("Incorrect ambient lightning range", 2);
 	else if ((!color.r || color.r < 0 || color.r > 255)
-			|| (!color.b || color.b < 0 || color.b > 255)
-			|| (!color.b || color.g < 0 || color.g > 255))
+		|| (!color.b || color.b < 0 || color.b > 255)
+		|| (!color.b || color.g < 0 || color.g > 255))
 		ft_putendl_fd("Incorrect RGB range", 2);
 	else
 		return ;
@@ -34,7 +34,7 @@ void	validate_camera_sq_pl(char **spl, char flag)
 {
 	t_coord	coord;
 	t_color	color;
-	double		fov;
+	double	fov;
 
 	if (flag == 'c')
 		fov = ft_atof(spl[3]);
@@ -69,8 +69,8 @@ void	validate_light_sphere(char **spl, char flag)
 	if (flag == 'l' && (brightness < 0 || brightness > 1))
 		ft_putendl_fd("Brightness out of range", 2);
 	else if ((color.r < 0 || color.r > 255)
-			|| (color.b < 0 || color.b > 255)
-			|| (color.g < 0 || color.g > 255))
+		|| (color.b < 0 || color.b > 255)
+		|| (color.g < 0 || color.g > 255))
 		ft_putendl_fd("Incorrect RGB range", 2);
 	else
 		return ;
@@ -111,7 +111,7 @@ void	validate_elements(char **spl)
 		c++;
 	}
 	else if (spl && compare(spl[0], "L", 1) && arrlen(spl) == 4)
-	{	
+	{
 		validate_light_sphere(spl, 'l');
 		l++;
 	}
@@ -138,7 +138,7 @@ void	validate_map(char *map_name)
 		}
 		spl = ft_split(line, ' ');
 		validate_elements(spl);
-		free_memory((void**)spl);
+		free_memory((void **)spl);
 		free(line);
 		line = get_next_line(fd);
 	}

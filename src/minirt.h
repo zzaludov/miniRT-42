@@ -109,15 +109,22 @@ typedef struct s_scene
 	int			n_cy;
 }	t_scene;
 
+typedef struct s_pixel
+{
+	t_color			rgb;
+	double			dist;
+	char			object;
+	int				index;
+}	t_pixel;
+
 typedef struct s_pointer_mlx
 {
 	mlx_t			*mlx;
 	mlx_image_t		*img;
 	char			*map_name;
 	t_scene			*scene;
-	t_color			**pixel_rgb;
-	//int32_t			**pixel_rgb;   //save color of pixel of x and y axis: pixel[x][y]
-	double			**pixel_dist;  //distance of saved color for comparison
+	t_pixel			**pixel;
+
 }	t_pointer_mlx;
 
 //parse_map.c

@@ -64,92 +64,115 @@ t_coord	creating_ray(int pixel_x, int pixel_y, double fov/*, t_coord dir*/)
 	return (ray_dir);
 }
 
-void	pixel_color(t_pointer_mlx *p, double t, int pixel_x, int pixel_y, t_color color) // 5 variables
+//t_pixel	pixel_color(t_pointer_mlx *p, double t, int pixel_x, int pixel_y, t_color color) // 5 variables
+t_pixel	pixel_info(t_pixel *prev, t_color color, double dist, char object, int index)
 {
-	//does it work in object?
-	if (p->pixel_rgb[pixel_x][pixel_y].r == -1
-		|| (t < p->pixel_dist[pixel_x][pixel_y] && t >= 0))
+	t_pixel	pixel;
+
+	//printf("%c %i %i %f\n", object, color.r, index, dist);
+	if (prev->rgb.r == -1
+		|| (dist < prev->dist && dist >= 0))
 	{
-		p->pixel_rgb[pixel_x][pixel_y] = color;
-        	p->pixel_dist[pixel_x][pixel_y] = t;
+		pixel.rgb = color;
+        pixel.dist = dist;
+		pixel.object = object;
+		pixel.index = index;
 	}
+	else
+		pixel = *prev;
+	return (pixel);
 }
 
-int	find_shadow(t_pointer_mlx *p,/* int pixel_x, int pixel_y,*/ t_coord ray_dir, double distance)
+/*int	between(int t, int dist)
+{
+	return(1);
+}*/
+
+int	find_shadow(t_pointer_mlx *p, int x, int y, t_coord ray_dir/*, double distance*/)
 {
 	int	i;
 	double	t;
 
-	//distance *= -1;
+	//printf ("?: %f\n", distance);
 	i = 0;
 	while (i < p->scene->n_sp)
 	{
-		if (intersect_sphere(p->scene->l->pos, ray_dir, p->scene->sp[i], &t)
-			&& distance - t > 0)
+		if ((i != p->pixel[x][y].index && p->pixel[x][y].object != 's')
+			&& intersect_sphere(p->scene->l->pos, ray_dir, p->scene->sp[i], &t)
+			/*&& distance > (t * -1)*/)
 		{
-			printf ("sphere: %f %f\n", distance, t);
-			return 0;
+			//printf ("sphere: %f %f\n", distance, t);
+			//printf ("sphere: %f\n", t);
+			return (0);
 		}
 		i++;
 	}
 	i = 0;
 	while (i < p->scene->n_cy)
 	{
-		if (intersect_cylinder(p->scene->l->pos, ray_dir, p->scene->cy[i], &t)
-			&& distance > t)
+		if ((p->pixel[x][y].object != 'c' && p->pixel[x][y].index != i)
+			&& intersect_cylinder(p->scene->l->pos, ray_dir, p->scene->cy[i], &t)
+			/*&& distance > (t * -1)*/)
 		{
 			//printf ("cylinder: %f %f\n", distance, t);
-			return 0;
+			printf ("cylinder: %f\n", t);
+			return (0);
 		}
-		if (intersect_disk(p->scene->l->pos, ray_dir, p->scene->cy[i], &t)
-			&& distance > t)
-			return 0;
+		if ((p->pixel[x][y].object != 'c' && p->pixel[x][y].index != i)
+			&& intersect_disk(p->scene->l->pos, ray_dir, p->scene->cy[i], &t)
+			/*&& distance > (t * -1)*/)
+			{
+				printf ("cylinder cap: %f\n", t);
+				return (0);
+			}
 		i++;
 	}
 	i = 0;
 	while (i < p->scene->n_pl)
 	{
-		if (intersect_plane(p->scene->l->pos, ray_dir, p->scene->pl[i], &t)
-			&& distance < t)
-			return 0;
+		if ((p->pixel[x][y].object != 'p' && p->pixel[x][y].index != i)
+			&& intersect_plane(p->scene->l->pos, ray_dir, p->scene->pl[i], &t)
+			/*&& distance > (t * -1)*/)
+			{
+				//printf ("plane: %f\n", t);
+				return (0);
+			}
 		i++;
 	}
 	return 1;
 }
 
-double	find_intersection(t_pointer_mlx *p, int pixel_x, int pixel_y, t_coord ray_dir)
+double	find_intersection(t_pointer_mlx *p, int x, int y, t_coord ray_dir)
 {
 	int	i;
 	double	t;
-	t_color	black;
-	black.r = 25;
-	black.g = 25;
-	black.b = 25;
 
 	i = 0;
 	while (i < p->scene->n_sp)
 	{
 		if (intersect_sphere(p->scene->c->pos, ray_dir, p->scene->sp[i], &t))
-			pixel_color(p, t, pixel_x, pixel_y, p->scene->sp[i]->rgb);
+			p->pixel[x][y] = pixel_info(&p->pixel[x][y], p->scene->sp[i]->rgb, t, 's', i);
 		i++;
 	}
 	i = 0;
 	while (i < p->scene->n_cy)
 	{
 		if (intersect_cylinder(p->scene->c->pos, ray_dir, p->scene->cy[i], &t))
-			pixel_color(p, t, pixel_x, pixel_y, p->scene->cy[i]->rgb);
+			p->pixel[x][y] = pixel_info(&p->pixel[x][y], p->scene->cy[i]->rgb, t, 'c', i);
 		if (intersect_disk(p->scene->c->pos, ray_dir, p->scene->cy[i], &t))
-			//pixel_color(p, t, pixel_x, pixel_y, p->scene->cy[i]->rgb);
-			pixel_color(p, t, pixel_x, pixel_y, black);
+			p->pixel[x][y] = pixel_info(&p->pixel[x][y], p->scene->cy[i]->rgb, t, 'c', i);
 		i++;
 	}
 	i = 0;
 	while (i < p->scene->n_pl)
 	{
 		if (intersect_plane(p->scene->c->pos, ray_dir, p->scene->pl[i], &t))
-			pixel_color(p, t, pixel_x, pixel_y, p->scene->pl[i]->rgb);
+			p->pixel[x][y] = pixel_info(&p->pixel[x][y], p->scene->pl[i]->rgb, t, 'p', i);
 		i++;
 	}
+	/*printf("red:%i\n", p->pixel[x][y].rgb.r);
+	printf("object:%c\n", p->pixel[x][y].object);
+	printf("index:%i\n", p->pixel[x][y].index);*/
 	return (t);
 }
 
@@ -161,37 +184,27 @@ void	pixeling(t_pointer_mlx *p)
 	t_coord	pixel;
 	double	t;
 
-	for (int pixel_y = 0; pixel_y < HEIGHT; pixel_y++) {
-		for (int pixel_x = 0; pixel_x < WIDTH; pixel_x++) {
-			ray_dir = creating_ray(pixel_x, pixel_y, p->scene->c->fov/*, p->scene->c->dir*/);
-			t = find_intersection(p, pixel_x, pixel_y, ray_dir);
-//			if (t > 0)
-//			{
-				//printf ("\nt: %f\n", t);
-				
-				// intersection point in 3D coordinates
-				pixel = vector_scale(ray_dir, t);
-				pixel = vector_add(pixel, p->scene->c->pos);
-				
-				// ray between intersection point and light
-				ray_dir = normalized(vector_subtract(pixel, p->scene->l->pos));
-				
-				// distance between intersection point and light
-				t = vector_len(vector_subtract(pixel, p->scene->l->pos));
-				//printf ("dist: %f\n", t);
-				if (find_shadow(p,/* pixel_x, pixel_y, */ray_dir, t))
-				{
-	//				printf("light\n");
-					mlx_put_pixel(p->img, pixel_x, pixel_y, light(&p->pixel_rgb[pixel_x][pixel_y], p->scene->l));
-				}
-					
-				else
-				{
-	//				printf("ambient\n");
-					mlx_put_pixel(p->img, pixel_x, pixel_y, ambient(&p->pixel_rgb[pixel_x][pixel_y], p->scene->a));
-				}
-//			}
-			//mlx_put_pixel(p->img, pixel_x, pixel_y, light(&p->pixel_rgb[pixel_x][pixel_y], p->scene->l));
+	for (int y = 0; y < HEIGHT; y++) {
+		for (int x = 0; x < WIDTH; x++) {
+			ray_dir = creating_ray(x, y, p->scene->c->fov/*, p->scene->c->dir*/);
+			t = find_intersection(p, x, y, ray_dir);
+
+			//printf ("\nt: %f\n", t);
+			
+			// intersection point in 3D coordinates
+			pixel = vector_scale(ray_dir, t);
+			pixel = vector_add(pixel, p->scene->c->pos);
+			
+			// ray printf ("cylinder: %f\n", t);
+			// distance between intersection point and light
+			t = vector_len(vector_subtract(pixel, p->scene->l->pos));
+
+			//printf ("dist: %f\n", t);
+			if (find_shadow(p, x, y, ray_dir/*, t*/))
+				mlx_put_pixel(p->img, x, y, light(&p->pixel[x][y].rgb, p->scene->l));			
+			else
+				mlx_put_pixel(p->img, x, y, ambient(&p->pixel[x][y].rgb, p->scene->a));
+
 		}
 	}
 }

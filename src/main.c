@@ -79,12 +79,8 @@ void	final_free(t_pointer_mlx *p)
 	free(p->scene);
 	i = 0;
 	while (i < WIDTH)
-		free(p->pixel_rgb[i++]);
-	free(p->pixel_rgb);
-	i = 0;
-	while (i < WIDTH)
-		free(p->pixel_dist[i++]);
-	free(p->pixel_dist);
+		free(p->pixel[i++]);
+	free(p->pixel);
 }
 
 void	read_map_hook(void *param)
@@ -96,27 +92,22 @@ void	read_map_hook(void *param)
 	i = 0;
 	p = param;
 	p->scene = init_scene(p->map_name);
-	p->pixel_rgb = (t_color **) malloc (WIDTH * sizeof(t_color *));
+	
+	p->pixel = (t_pixel **) malloc (WIDTH * sizeof(t_pixel *));
 	while (i < WIDTH)
 	{
 		j = 0;
-		p->pixel_rgb[i] = (t_color *) malloc (HEIGHT * sizeof(t_color));
+		p->pixel[i] = (t_pixel *) malloc (HEIGHT * sizeof(t_pixel));
 		while (j < HEIGHT)
 		{
-			p->pixel_rgb[i][j].r = -1;
-			p->pixel_rgb[i][j].g = -1;
-			p->pixel_rgb[i][j++].b = -1;
+			p->pixel[i][j].rgb.r = -1;
+			p->pixel[i][j].rgb.g = -1;
+			p->pixel[i][j].rgb.b = -1;
+			p->pixel[i][j].dist = -1; //?
+			p->pixel[i][j].object = 0;  //?
+			p->pixel[i][j].index = -1; //?
+			j++;
 		}
-		i++;
-	}
-	i = 0;
-	p->pixel_dist = (double **) malloc (WIDTH * sizeof(double *));
-	while (i < WIDTH)
-	{
-		j = 0;
-		p->pixel_dist[i] = (double *) malloc (HEIGHT * sizeof(double));
-		while (j < HEIGHT)
-			p->pixel_dist[i][j++] = 0;
 		i++;
 	}
 	open_map(p);

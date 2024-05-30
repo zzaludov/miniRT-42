@@ -22,7 +22,6 @@ t_coord	create_vector(double x, double y, double z)
 	return (v);
 }
 
-
 t_coord	vector_scale(t_coord v, double sc)
 {
 	t_coord	v1;
