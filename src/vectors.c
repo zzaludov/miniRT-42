@@ -62,6 +62,16 @@ t_coord	vector_subtract(t_coord v1, t_coord v2)
 	return (v);
 }
 
+t_coord	vector_multiply(t_coord v1, t_coord v2)
+{
+	t_coord	v;
+
+	v.x = v1.x * v2.x;
+	v.y = v1.y * v2.y;
+	v.z = v1.z * v2.z;
+	return (v);
+}
+
 // cross_product
 t_coord	vector_produkt(t_coord v1, t_coord v2)
 {
