@@ -71,10 +71,10 @@ t_pixel	pixel_info(t_pixel *prev, t_color color, double dist, char object, int i
 
 	//printf("%c %i %i %f\n", object, color.r, index, dist);
 	if (prev->rgb.r == -1
-		|| (dist < prev->dist && dist >= 0))
+		|| (dist < prev->cam_dist && dist >= 0))
 	{
 		pixel.rgb = color;
-        pixel.dist = dist;
+        	pixel.cam_dist = dist;
 		pixel.object = object;
 		pixel.index = index;
 	}
@@ -197,7 +197,8 @@ void	pixeling(t_pointer_mlx *p)
 			
 			// ray printf ("cylinder: %f\n", t);
 			// distance between intersection point and light
-			t = vector_len(vector_subtract(pixel, p->scene->l->pos));
+			// t = vector_len(vector_subtract(pixel, p->scene->l->pos));
+			p->pixel[x][y].light_dist = vector_len(vector_subtract(pixel, p->scene->l->pos));
 
 			//printf ("dist: %f\n", t);
 			if (find_shadow(p, x, y, ray_dir/*, t*/))
