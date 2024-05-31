@@ -183,6 +183,7 @@ void	pixeling(t_pointer_mlx *p)
 	t_coord	ray_dir;
 	t_coord	pixel;
 	double	t;
+	t_color	final;
 
 	for (int y = 0; y < HEIGHT; y++) {
 		for (int x = 0; x < WIDTH; x++) {
@@ -202,9 +203,12 @@ void	pixeling(t_pointer_mlx *p)
 
 			//printf ("dist: %f\n", t);
 			if (find_shadow(p, x, y, ray_dir/*, t*/))
-				mlx_put_pixel(p->img, x, y, diffuse(&p->pixel[x][y].rgb, p->scene->l));			
+				mlx_put_pixel(p->img, x, y, light(&p->pixel[x][y].rgb, p->scene->l));
+				// final = diffuse(p->scene->a, p->scene->l, p->pixel[x][y]);
 			else
-				mlx_put_pixel(p->img, x, y, shadow(&p->pixel[x][y].rgb, p->scene->a));
+				mlx_put_pixel(p->img, x, y, ambient(&p->pixel[x][y].rgb, p->scene->a));
+				// final = ambient(&p->pixel[x][y].rgb, p->scene->a);
+			// mlx_put_pixel(p->img, x, y, pixel(final, 255));
 
 		}
 	}
