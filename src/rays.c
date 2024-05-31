@@ -202,9 +202,9 @@ void	pixeling(t_pointer_mlx *p)
 
 			//printf ("dist: %f\n", t);
 			if (find_shadow(p, x, y, ray_dir/*, t*/))
-				mlx_put_pixel(p->img, x, y, light(&p->pixel[x][y].rgb, p->scene->l));			
+				mlx_put_pixel(p->img, x, y, diffuse(&p->pixel[x][y].rgb, p->scene->l));			
 			else
-				mlx_put_pixel(p->img, x, y, ambient(&p->pixel[x][y].rgb, p->scene->a));
+				mlx_put_pixel(p->img, x, y, shadow(&p->pixel[x][y].rgb, p->scene->a));
 
 		}
 	}
