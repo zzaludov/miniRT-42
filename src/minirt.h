@@ -112,7 +112,8 @@ typedef struct s_scene
 typedef struct s_pixel
 {
 	t_color			rgb;
-	double			dist;
+	double			cam_dist;
+	double			light_dist;
 	char			object;
 	int				index;
 }	t_pixel;
