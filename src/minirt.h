@@ -152,6 +152,7 @@ double		ft_atof(const char *nptr);
 int32_t		pixel(t_color *color, int32_t a);
 int32_t		ambient(t_color *color, t_ambient *a);
 int32_t		light(t_color *color, t_light *l);
+// int32_t		diffuse(t_color *ambient, t_color *light, double distance);
 //int32_t		pixel(int32_t r, int32_t g, int32_t b, int32_t a);
 
 void 		pixeling(t_pointer_mlx *p);
@@ -167,6 +168,7 @@ t_coord		vector_scale(t_coord v, double sc);
 t_coord		normalized(t_coord v);
 t_coord		vector_add(t_coord v1, t_coord v2);
 t_coord		vector_subtract(t_coord v1, t_coord v2);
+t_coord		vector_multiply(t_coord v1, t_coord v2);
 t_coord		vector_produkt(t_coord v1, t_coord v2);
 t_coord		vector_projection(t_coord v1, t_coord v2);
 double		vector_len(t_coord v);
