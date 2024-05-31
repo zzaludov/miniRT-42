@@ -103,7 +103,8 @@ void	read_map_hook(void *param)
 			p->pixel[i][j].rgb.r = -1;
 			p->pixel[i][j].rgb.g = -1;
 			p->pixel[i][j].rgb.b = -1;
-			p->pixel[i][j].dist = -1; //?
+			p->pixel[i][j].cam_dist = -1; //?
+			p->pixel[i][j].light_dist = -1; //?
 			p->pixel[i][j].object = 0;  //?
 			p->pixel[i][j].index = -1; //?
 			j++;
