@@ -152,7 +152,7 @@ double		ft_atof(const char *nptr);
 int32_t		pixel(t_color *color, int32_t a);
 int32_t		ambient(t_color *color, t_ambient *a);
 int32_t		light(t_color *color, t_light *l);
-// int32_t		diffuse(t_color *ambient, t_color *light, double distance);
+// int32_t		diffuse(t_ambient *a, t_light *l, double distance, t_pixel pixel);
 //int32_t		pixel(int32_t r, int32_t g, int32_t b, int32_t a);
 
 void 		pixeling(t_pointer_mlx *p);
