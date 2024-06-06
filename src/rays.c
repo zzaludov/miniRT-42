@@ -92,17 +92,33 @@ int	find_shadow(t_pointer_mlx *p, int x, int y, t_coord ray_dir)
 {
 	int	i;
 	double	t;
+	
 
 	//printf ("?: %f\n", p->pixel[x][y].light_dist);
 	i = 0;
+	while (i < p->scene->n_pl)
+	{
+
+		if ((p->pixel[x][y].object != 'p' || p->pixel[x][y].index != i)
+			&& intersect_plane(p->scene->l->pos, ray_dir, p->scene->pl[i], &t)
+			&& t > 0 && t < p->pixel[x][y].light_dist)
+			{
+				//if (p->pixel[x][y].object == 'c')
+				//printf("%c\n", p->pixel[x][y].object);
+					printf ("%c  %i: %f   %i: %f\n",p->pixel[x][y].object, p->pixel[x][y].index,p->pixel[x][y].light_dist, i, t);
+				//printf ("plane: %f\n", t);
+				return (0);
+			}
+		i++;
+	}
+	i = 0;
 	while (i < p->scene->n_sp)
 	{
-		if ((i != p->pixel[x][y].index && p->pixel[x][y].object != 's')
+		if ((i != p->pixel[x][y].index || p->pixel[x][y].object != 's')
 			&& intersect_sphere(p->scene->l->pos, ray_dir, p->scene->sp[i], &t)
 			&& t > 0 && t < p->pixel[x][y].light_dist)
 		{
-			if (i == 3 && p->pixel[x][y].object == 's')
-				printf ("sphere: %i: %f   %i: %f\n", p->pixel[x][y].index,p->pixel[x][y].light_dist, i, t);
+			
 			//printf ("sphere: %f\n", t);
 			return (0);
 		}
@@ -111,15 +127,18 @@ int	find_shadow(t_pointer_mlx *p, int x, int y, t_coord ray_dir)
 	i = 0;
 	while (i < p->scene->n_cy)
 	{
-		if ((p->pixel[x][y].object != 'c' && p->pixel[x][y].index != i)
+		/*if (p->pixel[x][y].object == 'p')
+			printf ("cylinder: %f %f\n", p->pixel[x][y].light_dist, t);*/
+		if ((p->pixel[x][y].object != 'c' || p->pixel[x][y].index != i)
 			&& intersect_cylinder(p->scene->l->pos, ray_dir, p->scene->cy[i], &t)
 			 && t > 0 && t < p->pixel[x][y].light_dist)
 		{
-			//printf ("cylinder: %f %f\n", distance, t);
-			printf ("cylinder: %f\n", t);
+			if (p->pixel[x][y].object == 'p')
+			printf ("cylinder: %f %f\n", p->pixel[x][y].light_dist, t);
+			//printf ("cylinder: %f\n", t);
 			return (0);
 		}
-		if ((p->pixel[x][y].object != 'c' && p->pixel[x][y].index != i)
+		if ((p->pixel[x][y].object != 'c' || p->pixel[x][y].index != i)
 			&& intersect_disk(p->scene->l->pos, ray_dir, p->scene->cy[i], &t)
 			 && t > 0 && t < p->pixel[x][y].light_dist)
 			{
@@ -128,18 +147,7 @@ int	find_shadow(t_pointer_mlx *p, int x, int y, t_coord ray_dir)
 			}
 		i++;
 	}
-	i = 0;
-	while (i < p->scene->n_pl)
-	{
-		if ((p->pixel[x][y].object != 'p' && p->pixel[x][y].index != i)
-			&& intersect_plane(p->scene->l->pos, ray_dir, p->scene->pl[i], &t)
-			 && t > 0 && t < p->pixel[x][y].light_dist)
-			{
-				//printf ("plane: %f\n", t);
-				return (0);
-			}
-		i++;
-	}
+	
 	return 1;
 }
 
@@ -208,9 +216,10 @@ void	pixeling(t_pointer_mlx *p)
 				light_dir = vector_subtract(create_vector(0, 0, 0), light_dir);*/
 			
 			p->pixel[x][y].light_dist = vector_len(light_dir);
+			light_dir = normalized(light_dir);
 
 			//printf ("dist: %f\n", t);
-			if (find_shadow(p, x, y, light_dir))
+			if (p->pixel[x][y].index != -1 && find_shadow(p, x, y, light_dir))
 				mlx_put_pixel(p->img, x, y, light(&p->pixel[x][y].rgb, p->scene->l));
 				// final = diffuse(p->scene->a, p->scene->l, p->pixel[x][y]);
 			else

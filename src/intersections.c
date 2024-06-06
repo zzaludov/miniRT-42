@@ -28,6 +28,7 @@ int	intersect_plane(t_coord ray_org, t_coord ray_dir, t_plane *plane, double *t)
 		return (0); // Ray is parallel to the plane, no intersection
 	}
 	*t = vector_point(vector_subtract(plane->pos, ray_org), plane->dir) / denominator;
+	//printf("%f %f\n", *t, denominator);
 	if (*t < 0)
 	{
 		return (0);
