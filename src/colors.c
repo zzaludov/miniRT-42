@@ -53,9 +53,13 @@ int32_t	light(t_color *color, t_light *l)
 	//return (light);
 }
 
-/*t_color	diffuse(t_ambient *ambient, t_light *light, double distace, t_pixel pixel)
+/*t_color	diffuse(t_pixel pixel, t_coord intersection, t_ambient *ambient, t_light *light)
 {
+	t_coord	normal;
 	t_color diffuse;
+
+	// for round surfaces
+	normal = normalized(vector_subtract())
 	return (diffuse);
 }*/
 

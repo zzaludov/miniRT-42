@@ -25,6 +25,11 @@
 # define EPSILON 1e-6
 # define WIDTH 1000
 # define HEIGHT 600
+// ambient coeficient
+# define Ka 0.5
+// diffuse coeficient
+# define Kd 0.5
+
 
 // attributes structures
 typedef struct s_color
@@ -116,6 +121,9 @@ typedef struct s_pixel
 	double			light_dist;
 	char			object;
 	int				index;
+	//add
+	t_coord			center;
+	t_coord			intersection;
 }	t_pixel;
 
 typedef struct s_pointer_mlx
@@ -152,7 +160,7 @@ double		ft_atof(const char *nptr);
 int32_t		pixel(t_color *color, int32_t a);
 int32_t		ambient(t_color *color, t_ambient *a);
 int32_t		light(t_color *color, t_light *l);
-// int32_t		diffuse(t_ambient *a, t_light *l, double distance, t_pixel pixel);
+// t_color	diffuse(t_pixel pixel, t_coord intersection, t_ambient *ambient, t_light *light)
 //int32_t		pixel(int32_t r, int32_t g, int32_t b, int32_t a);
 
 void 		pixeling(t_pointer_mlx *p);
