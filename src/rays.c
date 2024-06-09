@@ -110,7 +110,7 @@ int	find_shadow(t_pointer_mlx *p, int x, int y, t_coord light_dir)
 			&& intersect_cylinder(bias, light_dir, p->scene->cy[i], &t)
 			 && t > 0 && t < p->pixel[x][y].light_dist)
 			return (0);
-		if ((p->pixel[x][y].object != 'c' || p->pixel[x][y].index != i)
+		if ((p->pixel[x][y].object != 'd' || p->pixel[x][y].index != i)
 			&& intersect_disk(bias, light_dir, p->scene->cy[i], &t)
 			 && t > 0 && t < p->pixel[x][y].light_dist)
 				return (0);
@@ -147,7 +147,7 @@ double	find_intersection(t_pointer_mlx *p, int x, int y, t_coord ray_dir)
 		if (intersect_cylinder(p->scene->c->pos, ray_dir, p->scene->cy[i], &t))
 			p->pixel[x][y] = pixel_info(&p->pixel[x][y], p->scene->cy[i]->rgb, t, 'c', i);
 		if (intersect_disk(p->scene->c->pos, ray_dir, p->scene->cy[i], &t))
-			p->pixel[x][y] = pixel_info(&p->pixel[x][y], p->scene->cy[i]->rgb, t, 'c', i);
+			p->pixel[x][y] = pixel_info(&p->pixel[x][y], p->scene->cy[i]->rgb, t, 'd', i);
 		i++;
 	}
 	i = 0;
@@ -160,6 +160,29 @@ double	find_intersection(t_pointer_mlx *p, int x, int y, t_coord ray_dir)
 	return (t);
 }
 
+void	calculate_normal(t_scene *s, t_pixel *pixel)
+{
+	t_coord	cp;
+	double	projection_lenght;
+	t_coord	projection;
+	t_coord	projection_point;
+
+	if(pixel->object == 's')
+		pixel->normal = normalized(vector_subtract(pixel->intersection, s->sp[pixel->index]->pos));
+	else if(pixel->object == 'c')
+	{
+		cp = vector_subtract(pixel->intersection, s->cy[pixel->index]->pos);
+		projection_lenght = vector_point(cp, s->cy[pixel->index]->dir);
+		projection = vector_scale(s->cy[pixel->index]->dir, projection_lenght);
+		projection_point = vector_add(s->cy[pixel->index]->pos, projection);
+		pixel->normal = normalized(vector_subtract(pixel->intersection, projection_point));
+	}
+	else if(pixel->object == 'd')
+		pixel->normal = s->cy[pixel->index]->dir;
+	else if(pixel->object == 'p')
+		pixel->normal = s->pl[pixel->index]->dir;
+}
+
 // https://brilliant.org/wiki/3d-coordinate-geometry-equation-of-a-line/
 
 void	pixeling(t_pointer_mlx *p)
@@ -168,7 +191,7 @@ void	pixeling(t_pointer_mlx *p)
 	t_coord	light_dir;
 	//t_coord	intersection;
 	double	t;
-	//t_color	final;int32_t		diffuse(t_ambient *a, t_light *l, double distance, t_pixel pixel);
+	t_color	final;
 
 	for (int y = 0; y < HEIGHT; y++) {
 		for (int x = 0; x < WIDTH; x++) {
@@ -178,6 +201,7 @@ void	pixeling(t_pointer_mlx *p)
 			// intersection point in 3D coordinates
 			p->pixel[x][y].intersection = vector_scale(ray_dir, t);
 			p->pixel[x][y].intersection = vector_add(p->pixel[x][y].intersection, p->scene->c->pos);
+			calculate_normal(p->scene, &p->pixel[x][y]);
 			
 			light_dir = vector_subtract(p->pixel[x][y].intersection, p->scene->l->pos);
 			
@@ -185,12 +209,13 @@ void	pixeling(t_pointer_mlx *p)
 			light_dir = normalized(light_dir);
 
 			if (p->pixel[x][y].index != -1 && find_shadow(p, x, y, light_dir))
-				mlx_put_pixel(p->img, x, y, light(&p->pixel[x][y].rgb, p->scene->l));
-				// final = diffuse(p->pixel[x][y], intersection, p->scene->a, p->scene->l);
+				//mlx_put_pixel(p->img, x, y, light(&p->pixel[x][y].rgb, p->scene->l));
+				//final = light(&p->pixel[x][y].rgb, p->scene->l);
+				final = diffuse(p->pixel[x][y], p->scene->a, p->scene->l, light_dir);
 			else
-				mlx_put_pixel(p->img, x, y, ambient(&p->pixel[x][y].rgb, p->scene->a));
-				// final = ambient(&p->pixel[x][y].rgb, p->scene->a);
-			// mlx_put_pixel(p->img, x, y, pixel(final, 255));
+				//mlx_put_pixel(p->img, x, y, ambient(&p->pixel[x][y].rgb, p->scene->a));
+				final = ambient(&p->pixel[x][y].rgb, p->scene->a);
+			mlx_put_pixel(p->img, x, y, pixel(&final, 255));
 
 		}
 	}

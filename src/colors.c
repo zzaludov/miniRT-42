@@ -22,8 +22,8 @@ int32_t	pixel(t_color *color, int32_t a)
 	return (color->r << 24 | color->g << 16 | color->b << 8 | a);
 }
 
-//t_color	ambient(t_color *color, t_ambient *a)
-int32_t	ambient(t_color *color, t_ambient *a)
+t_color	ambient(t_color *color, t_ambient *a)
+//int32_t	ambient(t_color *color, t_ambient *a)
 {
 	t_color	ambient;
 
@@ -33,13 +33,13 @@ int32_t	ambient(t_color *color, t_ambient *a)
 	ambient.r = (color->r * (int32_t)(a->rgb.r * a->ratio)) / 255;
 	ambient.g = (color->g * (int32_t)(a->rgb.g * a->ratio)) / 255;
 	ambient.b = (color->b * (int32_t)(a->rgb.b * a->ratio)) / 255;
-	return (pixel(&ambient, 255));  //?
-	//return (ambient);
+	//return (pixel(&ambient, 255));  //?
+	return (ambient);
 	
 }
 
-//t_color	light(t_color *color, t_light *l)
-int32_t	light(t_color *color, t_light *l)
+t_color	light(t_color *color, t_light *l)
+//int32_t	light(t_color *color, t_light *l)
 {
 	t_color	light;
 
@@ -49,19 +49,39 @@ int32_t	light(t_color *color, t_light *l)
 	light.r = (color->r * (int32_t)(l->rgb.r * l->brightness)) / 255;
 	light.g = (color->g * (int32_t)(l->rgb.g * l->brightness)) / 255;
 	light.b = (color->b * (int32_t)(l->rgb.b * l->brightness)) / 255;
-	return (pixel(&light, 255));
-	//return (light);
+	//return (pixel(&light, 255));
+	return (light);
 }
 
-/*t_color	diffuse(t_pixel pixel, t_coord intersection, t_ambient *ambient, t_light *light)
+t_color	diffuse(t_pixel pixel, t_ambient *ambient, t_light *light, t_coord light_dir)
 {
-	t_coord	normal;
 	t_color diffuse;
+	double a = 1.0;  // Constant attenuation coefficient
+    double b = 0.1;  // Linear attenuation coefficient
+    double c = 0.01; // Quadratic attenuation coefficient
 
-	// for round surfaces
-	normal = normalized(vector_subtract())
+	double	i_ambient;
+	double	i_diffuse;
+	//double	intensity;
+	double	attenuation_coefficients;
+
+	i_ambient = Ka * ambient->ratio;
+	i_diffuse = Kd * light->brightness * vector_point(light_dir, pixel.intersection);
+
+	attenuation_coefficients = (a + b * pixel.light_dist + c * pow(pixel.light_dist, 2));
+	//intensity = (i_ambient * i_diffuse) / attenuation_coefficients;
+
+	diffuse.r = (int)(pixel.rgb.r * i_ambient + light->rgb.r * i_diffuse / attenuation_coefficients);
+    diffuse.g = (int)(pixel.rgb.g * i_ambient + light->rgb.g * i_diffuse / attenuation_coefficients);
+    diffuse.b = (int)(pixel.rgb.b * i_ambient + light->rgb.b * i_diffuse / attenuation_coefficients);
+
+    // Clamp values to [0, 255]
+    diffuse.r = fmin(255, diffuse.r);
+    diffuse.g = fmin(255, diffuse.g);
+    diffuse.b = fmin(255, diffuse.b);
+
 	return (diffuse);
-}*/
+}
 
 void	alpha_screen(mlx_image_t *img)
 {

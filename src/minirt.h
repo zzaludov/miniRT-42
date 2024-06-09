@@ -72,7 +72,7 @@ typedef struct s_camera
 typedef struct s_light
 {
 	t_coord	pos;
-	float	brightness;
+	double	brightness;
 	t_color	rgb;
 }	t_light;
 
@@ -122,7 +122,7 @@ typedef struct s_pixel
 	char			object;
 	int				index;
 	//add
-	t_coord			center;
+	t_coord			normal;
 	t_coord			intersection;
 }	t_pixel;
 
@@ -158,9 +158,9 @@ bool		compare(const char *s1, const char *s2, size_t n);
 double		ft_atof(const char *nptr);
 
 int32_t		pixel(t_color *color, int32_t a);
-int32_t		ambient(t_color *color, t_ambient *a);
-int32_t		light(t_color *color, t_light *l);
-// t_color	diffuse(t_pixel pixel, t_coord intersection, t_ambient *ambient, t_light *light)
+t_color		ambient(t_color *color, t_ambient *a);
+t_color		light(t_color *color, t_light *l);
+t_color		diffuse(t_pixel pixel, t_ambient *ambient, t_light *light, t_coord light_dir);
 //int32_t		pixel(int32_t r, int32_t g, int32_t b, int32_t a);
 
 void 		pixeling(t_pointer_mlx *p);
