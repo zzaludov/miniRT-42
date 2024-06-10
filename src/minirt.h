@@ -185,7 +185,6 @@ double		deg_to_rad(double deg);
 
 void	sphere_manipulation(t_scene *scene, t_sphere *sphere, mlx_key_data_t keys);
 void	plane_manipulation(t_scene *scene, t_plane *plane, mlx_key_data_t keys);
-void	plane_manipulation(t_scene *s, t_cylinder *cylinder, mlx_key_data_t keys);
 void	mutate_diameter(double *diameter, keys_t key);
 void	mutate_pos( t_camera *camera, t_coord *pos, keys_t key);
 void	mutate_height(double *height, keys_t key);

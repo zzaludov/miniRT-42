@@ -12,6 +12,34 @@
 
 #include "minirt.h"
 
+void	pos_right(t_camera *camera, t_coord *pos)
+{
+		pos->x += (camera->dir.x * 1);
+		pos->y += (camera->dir.y * 1);
+		pos->z += (camera->dir.z * 1);
+	}
+
+void	pos_left(t_camera *camera, t_coord *pos)
+{
+		pos->x -= (camera->dir.x * 1);
+		pos->y -= (camera->dir.y * 1);
+		pos->z -= (camera->dir.z * 1);
+}
+
+void	pos_straight(t_camera *camera, t_coord *pos)
+{
+	pos->x -= (camera->dir.x * 1);
+	pos->y -= (camera->dir.y * 1);
+	pos->z -= (camera->dir.z * 1);
+}
+
+void	pos_back(t_camera *camera, t_coord *pos)
+{
+	pos->x += (camera->dir.x * 1);
+	pos->y += (camera->dir.y * 1);
+	pos->z += (camera->dir.z * 1);
+}
+
 void	mutate_diameter(double *diameter, keys_t key)
 {
 	if (key == MLX_KEY_1)
@@ -32,34 +60,6 @@ void	mutate_pos( t_camera *camera, t_coord *pos, keys_t key)
 		pos_straight(camera, pos);
 	if (key == MLX_KEY_DOWN)
 		pos_back(camera, pos);
-}
-
-void	pos_right(t_camera *camera, t_coord *pos)
-{
-		pos->x += (camera->dir.x * 1);
-		pos->y += (camera->dir.y * 1);
-		pos->z += (camera->dir.z * 1);
-	}
-
-void	pos_left(t_camera *camera, t_coord *pos)
-{
-		pos->x -= (camera->dir.x * 1);
-		pos->y -= (camera->dir.y * 1);
-		pos->z -= (camera->dir.z * 1);
-}
-
-void	pos_forward(t_camera *camera, t_coord *pos)
-{
-	pos->x -= (camera->dir.x * 1);
-	pos->y -= (camera->dir.y * 1);
-	pos->z -= (camera->dir.z * 1);
-}
-
-void	move_backward(t_camera *camera, t_coord *pos)
-{
-	pos->x += (camera->dir.x * 1);
-	pos->y += (camera->dir.y * 1);
-	pos->z += (camera->dir.z * 1);
 }
 
 void	mutate_height(double *height, keys_t key)
