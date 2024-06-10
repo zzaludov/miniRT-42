@@ -1,3 +1,0 @@
-/Users/androsov/Documents/42School/miniRT-42/MLX42/build/CMakeFiles/mlx42.dir
-/Users/androsov/Documents/42School/miniRT-42/MLX42/build/CMakeFiles/edit_cache.dir
-/Users/androsov/Documents/42School/miniRT-42/MLX42/build/CMakeFiles/rebuild_cache.dir
