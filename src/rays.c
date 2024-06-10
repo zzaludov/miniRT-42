@@ -179,6 +179,7 @@ void	calculate_normal(t_scene *s, t_pixel *pixel)
 	}
 	else if(pixel->object == 'd')
 		pixel->normal = s->cy[pixel->index]->dir;
+		//pixel->normal = vector_scale(s->cy[pixel->index]->dir, s->cy[pixel->index]->height);
 	else if(pixel->object == 'p')
 		pixel->normal = s->pl[pixel->index]->dir;
 }
@@ -189,7 +190,6 @@ void	pixeling(t_pointer_mlx *p)
 {
 	t_coord	ray_dir;
 	t_coord	light_dir;
-	//t_coord	intersection;
 	double	t;
 	t_color	final;
 
@@ -204,6 +204,7 @@ void	pixeling(t_pointer_mlx *p)
 			calculate_normal(p->scene, &p->pixel[x][y]);
 			
 			light_dir = vector_subtract(p->pixel[x][y].intersection, p->scene->l->pos);
+			//light_dir = vector_subtract(p->scene->l->pos, p->pixel[x][y].intersection);
 			
 			p->pixel[x][y].light_dist = vector_len(light_dir);
 			light_dir = normalized(light_dir);
