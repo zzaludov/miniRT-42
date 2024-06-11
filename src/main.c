@@ -137,6 +137,8 @@ int32_t	main(int argc, char **argv)
 		p.mlx = mlx;
 		p.img = img;
 		mlx_loop_hook(mlx, read_map_hook, &p);
+		mlx_key_hook(mlx, &handle_keys_wrapper, &p);
+		// mlx_mouse_hook(mlx, &handle_mouse, &p);
 		mlx_loop(mlx);
 		mlx_terminate(mlx);
 		free(p.map_name);

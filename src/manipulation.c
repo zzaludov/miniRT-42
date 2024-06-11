@@ -25,10 +25,11 @@ void	plane_manipulation(t_scene *scene, t_plane *plane, mlx_key_data_t keys)
 	// rotate();
 }
 
-void	cylinder_manipulation(t_scene *s, t_cylinder *cylinder, mlx_key_data_t keys)
+void	cylinder_manipulation(t_scene *scene, t_cylinder *cylinder,
+		 mlx_key_data_t keys)
 {
 	mutate_diameter(&cylinder->diameter, keys.key);
 	mutate_height(&cylinder->height, keys.key);
-	mutate_pos(s->c, &cylinder->pos, keys.key);
+	mutate_pos(scene->c, &cylinder->pos, keys.key);
 	// rotate()
 }

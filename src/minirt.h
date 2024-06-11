@@ -82,6 +82,7 @@ typedef struct s_sphere
 	t_coord	pos;
 	double	diameter;
 	t_color	rgb;
+	int		highlighted;
 }	t_sphere;
 
 typedef struct s_plane
@@ -89,6 +90,7 @@ typedef struct s_plane
 	t_coord	pos;
 	t_coord	dir;
 	t_color	rgb;
+	int		highlighted;
 }	t_plane;
 
 typedef struct s_cylinder
@@ -98,6 +100,7 @@ typedef struct s_cylinder
 	double	diameter;
 	double	height;
 	t_color	rgb;
+	int		highlighted;
 }	t_cylinder;
 
 // main info about scene structures
@@ -185,9 +188,14 @@ double		deg_to_rad(double deg);
 
 void	sphere_manipulation(t_scene *scene, t_sphere *sphere, mlx_key_data_t keys);
 void	plane_manipulation(t_scene *scene, t_plane *plane, mlx_key_data_t keys);
+void	cylinder_manipulation(t_scene *scene, t_cylinder *cylinder, mlx_key_data_t keys);
 void	mutate_diameter(double *diameter, keys_t key);
 void	mutate_pos( t_camera *camera, t_coord *pos, keys_t key);
 void	mutate_height(double *height, keys_t key);
+void	find_highlited(t_pointer_mlx *p, mlx_key_data_t keys);
+void	handle_keys(mlx_key_data_t keys, void *data);
+// void	handle_mouse(mouse_key_t button, action_t action, modifier_key_t mods, void *data);
+void	handle_keys_wrapper(struct mlx_key_data keys, void *data);
 
 
 #endif
