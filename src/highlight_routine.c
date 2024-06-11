@@ -26,6 +26,6 @@ void	find_highlited(t_pointer_mlx *p, mlx_key_data_t keys)
 			plane_manipulation(p->scene, p->scene->pl[i++], keys);
 	i = 0;
 	while (i < p->scene->n_sp)
-		if (p->scene->sp[i++]->highlighted == 1)
+		if (p->scene->sp[i]->highlighted == 1)
 			sphere_manipulation(p->scene, p->scene->sp[i++], keys);
 }

@@ -83,14 +83,15 @@ void	final_free(t_pointer_mlx *p)
 	free(p->pixel);
 }
 
-void	read_map_hook(void *param)
+void	read_map(t_pointer_mlx	*p)
+//void	read_map_hook(void *param)
 {
-	t_pointer_mlx	*p;
+	//t_pointer_mlx	*p;
 	int				i;
 	int				j;
 
 	i = 0;
-	p = param;
+	//p = param;
 	p->scene = init_scene(p->map_name);
 	
 	p->pixel = (t_pixel **) malloc (WIDTH * sizeof(t_pixel *));
@@ -112,8 +113,8 @@ void	read_map_hook(void *param)
 		i++;
 	}
 	open_map(p);
-	pixeling(p);
-	final_free(p);
+	//pixeling(p);
+	//final_free(p);
 }
 
 int32_t	main(int argc, char **argv)
@@ -136,11 +137,15 @@ int32_t	main(int argc, char **argv)
 			return (1);
 		p.mlx = mlx;
 		p.img = img;
-		mlx_loop_hook(mlx, read_map_hook, &p);
+
+		read_map(&p);
+		mlx_loop_hook(mlx, pixeling, &p);
+		//mlx_loop_hook(mlx, read_map_hook, &p);
 		mlx_key_hook(mlx, &handle_keys_wrapper, &p);
 		// mlx_mouse_hook(mlx, &handle_mouse, &p);
 		mlx_loop(mlx);
 		mlx_terminate(mlx);
+		final_free(&p);
 		free(p.map_name);
 	}
 	else

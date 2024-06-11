@@ -122,8 +122,8 @@ typedef struct s_pixel
 	t_color			rgb;
 	double			cam_dist;
 	double			light_dist;
-	char			object;
-	int				index;
+	char			object;   // s - sphere; c, d - cylinder; p - plane
+	int				index;    // index of object in t_scene 
 	//add
 	t_coord			normal;
 	t_coord			intersection;
@@ -166,7 +166,7 @@ t_color		light(t_color *color, t_light *l);
 t_color		diffuse(t_pixel pixel, t_ambient *ambient, t_light *light, t_coord light_dir);
 //int32_t		pixel(int32_t r, int32_t g, int32_t b, int32_t a);
 
-void 		pixeling(t_pointer_mlx *p);
+void 		pixeling(void *p);
 
 int			intersect_plane(t_coord ray_org, t_coord ray_dir, t_plane *plane, double *t);
 int			intersect_sphere(t_coord ray_org, t_coord ray_dir, t_sphere *sp, double *t);

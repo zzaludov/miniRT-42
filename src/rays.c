@@ -185,11 +185,14 @@ void	calculate_normal(t_scene *s, t_pixel *pixel)
 
 // https://brilliant.org/wiki/3d-coordinate-geometry-equation-of-a-line/
 
-void	pixeling(t_pointer_mlx *p)
+void	pixeling(void *param)
 {
+	t_pointer_mlx *p;
 	t_coord	ray_dir;
 	t_coord	light_dir;
 	//t_coord	intersection;
+
+	p = param;
 	double	t;
 	t_color	final;
 
