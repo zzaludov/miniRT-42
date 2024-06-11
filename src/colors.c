@@ -68,6 +68,7 @@ t_color	diffuse(t_pixel pixel, t_ambient *ambient, t_light *light, t_coord light
 	i_ambient = Ka * ambient->ratio;
 	i_diffuse = Kd * light->brightness * vector_point(pixel.normal, light_dir);
 	//i_diffuse = Kd * light->brightness * dot_product;
+	printf("i_ambient: %f i_diffuse: %f\n", i_ambient, i_diffuse);
 
 	attenuation_coefficients = (a + b * pixel.light_dist + c * pow(pixel.light_dist, 2));
 	//intensity = (i_ambient * i_diffuse) / attenuation_coefficients;
@@ -76,14 +77,18 @@ t_color	diffuse(t_pixel pixel, t_ambient *ambient, t_light *light, t_coord light
     diffuse.g = (int32_t)(pixel.rgb.g * i_ambient + light->rgb.g * i_diffuse / attenuation_coefficients);
     diffuse.b = (int32_t)(pixel.rgb.b * i_ambient + light->rgb.b * i_diffuse / attenuation_coefficients);
 
+	// diffuse.r = (int32_t)(pixel.rgb.r * i_diffuse  * pixel.light_dist);
+    // diffuse.g = (int32_t)(pixel.rgb.g * i_diffuse * pixel.light_dist);
+    // diffuse.b = (int32_t)(pixel.rgb.b * i_diffuse  * pixel.light_dist);
+
 	//diffuse.r = (int32_t)(pixel.rgb.r * ambient->ratio + (light->rgb.r * i_diffuse) / attenuation_coefficients);
     //diffuse.g = (int32_t)(pixel.rgb.g * ambient->ratio + (light->rgb.g * i_diffuse) / attenuation_coefficients);
     //diffuse.b = (int32_t)(pixel.rgb.b * ambient->ratio + (light->rgb.b * i_diffuse) / attenuation_coefficients);
 
     // Clamp values to [0, 255]
-    diffuse.r = fmin(255, diffuse.r);
-    diffuse.g = fmin(255, diffuse.g);
-    diffuse.b = fmin(255, diffuse.b);
+    // diffuse.r = fmin(255, fmax(0, diffuse.r));
+    // diffuse.g = fmin(255, fmax(0, diffuse.g));
+    // diffuse.b = fmin(255, fmax(0, diffuse.b));
 
 	return (diffuse);
 }
