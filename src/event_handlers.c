@@ -48,5 +48,9 @@ void	handle_keys(mlx_key_data_t keys, void *data)
 
 void handle_keys_wrapper(struct mlx_key_data keys, void *data)
 {
+	t_pointer_mlx	*p;
+
+	// p = data;
+	// printf("%f\n", p->scene->cy[0]->height);
     handle_keys(keys, (t_pointer_mlx *)data);
 }
