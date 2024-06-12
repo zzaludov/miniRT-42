@@ -16,7 +16,6 @@ void	sphere_manipulation(t_scene *scene, t_sphere *sphere, mlx_key_data_t keys)
 {
 	mutate_diameter(&sphere->diameter, keys.key);
 	mutate_pos(scene->c, &sphere->pos, keys.key);
-
 }
 
 void	plane_manipulation(t_scene *scene, t_plane *plane, mlx_key_data_t keys)

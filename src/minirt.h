@@ -194,7 +194,7 @@ void	mutate_pos( t_camera *camera, t_coord *pos, keys_t key);
 void	mutate_height(double *height, keys_t key);
 void	find_highlited(t_pointer_mlx *p, mlx_key_data_t keys);
 void	handle_keys(mlx_key_data_t keys, void *data);
-// void	handle_mouse(mouse_key_t button, action_t action, modifier_key_t mods, void *data);
+void	handle_mouse(mouse_key_t button, action_t action, modifier_key_t mods, void *data);
 void	handle_keys_wrapper(struct mlx_key_data keys, void *data);
 
 

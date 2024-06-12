@@ -63,7 +63,7 @@ void	parse_objects(t_pointer_mlx *p, char **spl)
 		p->scene->cy[p->scene->n_cy]->dir = split_xyz(spl[2]);
 		p->scene->cy[p->scene->n_cy]->diameter = ft_atof(spl[3]);
 		p->scene->cy[p->scene->n_cy]->height = ft_atof(spl[4]);
-		p->scene->cy[p->scene->n_cy]->highlighted = 1;
+		p->scene->cy[p->scene->n_cy]->highlighted = 0;
 		p->scene->cy[p->scene->n_cy++]->rgb = split_rgb(spl[5]);
 	}
 	else

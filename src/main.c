@@ -142,7 +142,7 @@ int32_t	main(int argc, char **argv)
 		mlx_loop_hook(mlx, pixeling, &p);
 		//mlx_loop_hook(mlx, read_map_hook, &p);
 		mlx_key_hook(mlx, &handle_keys_wrapper, &p);
-		// mlx_mouse_hook(mlx, &handle_mouse, &p);
+		mlx_mouse_hook(mlx, &handle_mouse, &p);
 		mlx_loop(mlx);
 		mlx_terminate(mlx);
 		final_free(&p);
