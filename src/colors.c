@@ -63,23 +63,28 @@ t_color	diffuse(t_pixel pixel, t_ambient *ambient, t_light *light, t_coord light
 	double	i_diffuse;
 	//double	intensity;
 	double	attenuation_coefficients;
-	//double dot_product = fmax(0.0, vector_point(pixel.normal, light_dir));
+	double dot_product = fmax(0.0, vector_point(pixel.normal, light_dir));
 
 	i_ambient = Ka * ambient->ratio;
-	i_diffuse = Kd * light->brightness * vector_point(pixel.normal, light_dir);
-	//i_diffuse = Kd * light->brightness * dot_product;
+	//i_diffuse = Kd * light->brightness * vector_point(pixel.normal, light_dir);
+	i_diffuse = Kd * light->brightness * dot_product;
 	printf("i_ambient: %f i_diffuse: %f\n", i_ambient, i_diffuse);
 
 	attenuation_coefficients = (a + b * pixel.light_dist + c * pow(pixel.light_dist, 2));
 	//intensity = (i_ambient * i_diffuse) / attenuation_coefficients;
 
-	diffuse.r = (int32_t)(pixel.rgb.r * i_ambient + light->rgb.r * i_diffuse / attenuation_coefficients);
-    diffuse.g = (int32_t)(pixel.rgb.g * i_ambient + light->rgb.g * i_diffuse / attenuation_coefficients);
-    diffuse.b = (int32_t)(pixel.rgb.b * i_ambient + light->rgb.b * i_diffuse / attenuation_coefficients);
+	// diffuse.r = (int32_t)(pixel.rgb.r * i_ambient + light->rgb.r * i_diffuse / attenuation_coefficients);
+    // diffuse.g = (int32_t)(pixel.rgb.g * i_ambient + light->rgb.g * i_diffuse / attenuation_coefficients);
+    // diffuse.b = (int32_t)(pixel.rgb.b * i_ambient + light->rgb.b * i_diffuse / attenuation_coefficients);
 
 	// diffuse.r = (int32_t)(pixel.rgb.r * i_diffuse  * pixel.light_dist);
     // diffuse.g = (int32_t)(pixel.rgb.g * i_diffuse * pixel.light_dist);
     // diffuse.b = (int32_t)(pixel.rgb.b * i_diffuse  * pixel.light_dist);
+
+	diffuse.r = (int32_t)(pixel.rgb.r * Ka * dot_product);
+    diffuse.g = (int32_t)(pixel.rgb.g * Ka * dot_product);
+    diffuse.b = (int32_t)(pixel.rgb.b * Ka * dot_product);
+
 
 	//diffuse.r = (int32_t)(pixel.rgb.r * ambient->ratio + (light->rgb.r * i_diffuse) / attenuation_coefficients);
     //diffuse.g = (int32_t)(pixel.rgb.g * ambient->ratio + (light->rgb.g * i_diffuse) / attenuation_coefficients);
