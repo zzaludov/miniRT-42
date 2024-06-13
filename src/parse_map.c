@@ -105,6 +105,7 @@ void	open_map(t_pointer_mlx* p)
 	char			*line;
 	char			**spl;
 
+	p->scene = init_scene(p->map_name);
 	fd = open(p->map_name, 0);
 	if (fd == -1)
 		ft_printf("Opening file failure."); //error 

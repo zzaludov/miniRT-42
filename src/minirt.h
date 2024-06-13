@@ -141,7 +141,9 @@ typedef struct s_pointer_mlx
 
 //parse_map.c
 void		open_map(t_pointer_mlx *p);
+void	pixel_struct(t_pointer_mlx	*p);
 t_scene		*init_scene(char* file);
+void	alpha_screen(mlx_image_t *img);
 
 // main_utils
 char	*validate_name(char *scene_name);

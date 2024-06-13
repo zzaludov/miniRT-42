@@ -57,32 +57,24 @@ void	handle_mouse(mouse_key_t button,
 			reset_highlight(p);
 			switch_flag = 0;
 		}
-		while (++i < p->scene->n_cy)
-			if (p->pixel[x][y].object == 'c')
-			{
-				p->scene->cy[i]->highlighted = 1;
+		if (p->pixel[x][y].object == 'c' || p->pixel[x][y].object == 'd')
+		{
+			p->scene->cy[p->pixel[x][y].index]->highlighted = 1;
+			switch_flag = 1;
+			write(1, "pointing on cy\n", 15);
+		}
+		if (p->pixel[x][y].object == 'p')
+		{
+				p->scene->pl[p->pixel[x][y].index]->highlighted = 1;
 				switch_flag = 1;
-				write(1, "pointing on cy\n", 15);
-				break ;
-			}
-		i = -1;
-		while (++i < p->scene->n_pl)
-			if (p->pixel[x][y].object == 'p')
-				{
-					p->scene->pl[i]->highlighted = 1;
-					switch_flag = 1;
-					write(1, "pointing on pl\n", 15);
-					break ;
-				}
-		i = -1;
-		while (++i < p->scene->n_sp)
-			if (p->pixel[x][y].object == 's')
-				{
-					p->scene->sp[i]->highlighted = 1;
-					switch_flag = 1;
-					write(1, "pointing on sp\n", 15);
-					break ;
-				}
+				write(1, "pointing on pl\n", 15);
+		}
+		if (p->pixel[x][y].object == 's')
+		{
+				p->scene->sp[p->pixel[x][y].index]->highlighted = 1;
+				switch_flag = 1;
+				write(1, "pointing on sp\n", 15);
+		}
 	}
 }
 
@@ -97,7 +89,8 @@ void	handle_keys(mlx_key_data_t keys, void *data)
 		&& (keys.key == MLX_KEY_A || keys.key == MLX_KEY_W
 			|| keys.key == MLX_KEY_D || keys.key == MLX_KEY_S
 			|| keys.key == MLX_KEY_PAGE_UP || keys.key == MLX_KEY_PAGE_DOWN
-			|| keys.key == MLX_KEY_1 || keys.key == MLX_KEY_2))
+			|| keys.key == MLX_KEY_1 || keys.key == MLX_KEY_2
+			|| keys.key == MLX_KEY_3 || keys.key == MLX_KEY_4))
 		find_highlited(p, keys);
 }
 

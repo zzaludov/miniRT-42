@@ -93,6 +93,7 @@ int	find_shadow(t_pointer_mlx *p, int x, int y, t_coord light_dir)
 	double	t;
 	t_coord	bias;
 	
+	//alpha_screen(p->img);
 	bias = vector_add(p->scene->l->pos, vector_scale(light_dir, -1 * EPSILON));
 	i = 0;
 	while (i < p->scene->n_sp)
@@ -190,12 +191,17 @@ void	pixeling(void *param)
 	t_pointer_mlx *p;
 	t_coord	ray_dir;
 	t_coord	light_dir;
-	//t_coord	intersection;
+	int	i;
 
 	p = param;
 	double	t;
 	t_color	final;
 
+	i = 0;
+	while (i < WIDTH)
+		free(p->pixel[i++]);
+	free(p->pixel);
+	pixel_struct(p);
 	for (int y = 0; y < HEIGHT; y++) {
 		for (int x = 0; x < WIDTH; x++) {
 			ray_dir = creating_ray(x, y, p->scene->c->fov/*, p->scene->c->dir*/);
@@ -210,7 +216,8 @@ void	pixeling(void *param)
 			
 			p->pixel[x][y].light_dist = vector_len(light_dir);
 			light_dir = normalized(light_dir);
-
+	
+			//printf("diameter: %f\n", p->scene->cy[0]->pos.z);
 			if (p->pixel[x][y].index != -1 && find_shadow(p, x, y, light_dir))
 				//mlx_put_pixel(p->img, x, y, light(&p->pixel[x][y].rgb, p->scene->l));
 				//final = light(&p->pixel[x][y].rgb, p->scene->l);

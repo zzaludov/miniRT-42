@@ -89,10 +89,10 @@ void	alpha_screen(mlx_image_t *img)
 	int	y;
  
 	y = 0;
-	while (y < 1000)
+	while (y < HEIGHT)
 	{
 		x = 0;
-		while (x < 1000)
+		while (x < WIDTH)
 		{
 			mlx_put_pixel(img, x, y, 0xFFFFFF00);
 			x++;

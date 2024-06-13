@@ -14,16 +14,14 @@
 
 void	pos_right(t_camera *camera, t_coord *pos)
 {
-		pos->x += (camera->dir.x * 1);
-		pos->y += (camera->dir.y * 1);
-		pos->z += (camera->dir.z * 1);
+		(void)camera;
+		pos->x += 1;
 	}
 
 void	pos_left(t_camera *camera, t_coord *pos)
 {
-		pos->x -= (camera->dir.x * 1);
-		pos->y -= (camera->dir.y * 1);
-		pos->z -= (camera->dir.z * 1);
+		(void)camera;
+		pos->x -= 1;
 }
 
 void	pos_straight(t_camera *camera, t_coord *pos)
@@ -42,11 +40,11 @@ void	pos_back(t_camera *camera, t_coord *pos)
 
 void	mutate_diameter(double *diameter, keys_t key)
 {
-	if (key == MLX_KEY_KP_ADD)
+	if (key == MLX_KEY_4)
 		*diameter += 0.25;
-	else if (key == MLX_KEY_KP_SUBTRACT && *diameter > 0.25)
+	else if (key == MLX_KEY_3 && *diameter > 0.26)
 		*diameter -= 0.25;
-	else if (key == MLX_KEY_KP_SUBTRACT)
+	else if (key == MLX_KEY_3)
 		return ;
 }
 
