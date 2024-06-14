@@ -64,7 +64,7 @@ t_color	diffuse(t_pixel pixel, t_ambient *ambient, t_light *light, t_coord light
 	//double	intensity;
 	double	attenuation_coefficients;
 	double dot_product = fmax(0.0, vector_point(pixel.normal, light_dir));
-
+	
 	i_ambient = Ka * ambient->ratio;
 	//i_diffuse = Kd * light->brightness * vector_point(pixel.normal, light_dir);
 	i_diffuse = Kd * light->brightness * dot_product;

@@ -26,7 +26,7 @@
 # define WIDTH 1000
 # define HEIGHT 600
 // ambient coeficient
-# define Ka 0.7
+# define Ka 0.5
 // diffuse coeficient
 # define Kd 0.7
 

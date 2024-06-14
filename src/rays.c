@@ -179,7 +179,6 @@ void	calculate_normal(t_scene *s, t_pixel *pixel)
 	}
 	else if(pixel->object == 'd')
 		pixel->normal = s->cy[pixel->index]->dir;
-		//pixel->normal = vector_scale(s->cy[pixel->index]->dir, s->cy[pixel->index]->height);
 	else if(pixel->object == 'p')
 		pixel->normal = s->pl[pixel->index]->dir;
 }
@@ -208,6 +207,10 @@ void	pixeling(t_pointer_mlx *p)
 			
 			p->pixel[x][y].light_dist = vector_len(light_dir);
 			light_dir = normalized(light_dir);
+
+			if (vector_point(p->pixel[x][y].normal, light_dir) < 0) {
+        		p->pixel[x][y].normal = vector_scale(p->pixel[x][y].normal, -1);  // Invert the normal
+    		}
 
 			if (p->pixel[x][y].index != -1 && find_shadow(p, x, y, light_dir))
 				//mlx_put_pixel(p->img, x, y, light(&p->pixel[x][y].rgb, p->scene->l));
