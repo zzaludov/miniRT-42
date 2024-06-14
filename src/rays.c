@@ -216,7 +216,10 @@ void	pixeling(void *param)
 			
 			p->pixel[x][y].light_dist = vector_len(light_dir);
 			light_dir = normalized(light_dir);
-	
+
+			if (vector_point(p->pixel[x][y].normal, light_dir) < 0) 
+        		p->pixel[x][y].normal = vector_scale(p->pixel[x][y].normal, -1);
+			
 			//printf("diameter: %f\n", p->scene->cy[0]->pos.z);
 			if (p->pixel[x][y].index != -1 && find_shadow(p, x, y, light_dir))
 				//mlx_put_pixel(p->img, x, y, light(&p->pixel[x][y].rgb, p->scene->l));
