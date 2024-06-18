@@ -46,7 +46,7 @@ void	parse_objects(t_pointer_mlx *p, char **spl)
 		p->scene->sp[p->scene->n_sp]->pos = split_xyz(spl[1]);
 		p->scene->sp[p->scene->n_sp]->diameter = ft_atof(spl[2]);
 		p->scene->sp[p->scene->n_sp]->highlighted = 0;
-		p->scene->sp[p->scene->n_sp++]->rgb = split_rgb(spl[3]);	
+		p->scene->sp[p->scene->n_sp++]->rgb = split_rgb(spl[3]);
 	}
 	else if (compare(spl[0], "pl", 2) && arrlen(spl) == 4)
 	{

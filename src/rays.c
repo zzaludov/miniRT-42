@@ -66,22 +66,25 @@ t_coord	creating_ray(int pixel_x, int pixel_y, double fov/*, t_coord dir*/)
 
 void	calculate_normal(t_scene *s, t_pixel *pixel)
 {
-	t_coord	cp;
-	double	projection_lenght;
-	t_coord	projection;
-	t_coord	projection_point;
+	// t_coord	cp;
+	// double	projection_lenght;
+	// t_coord	projection;
+	// t_coord	projection_point;
 
 	if(pixel->object == 's')
-		//pixel->normal = normalized(vector_subtract(pixel->intersection, s->sp[pixel->index]->pos));
-		pixel->normal = normalized(vector_subtract(s->sp[pixel->index]->pos, pixel->intersection));
+		pixel->normal = normalized(vector_subtract(pixel->intersection, s->sp[pixel->index]->pos));
+		//pixel->normal = normalized(vector_subtract(s->sp[pixel->index]->pos, pixel->intersection));
 
 	else if(pixel->object == 'c')
 	{
-		cp = vector_subtract(pixel->intersection, s->cy[pixel->index]->pos);
+		/*cp = vector_subtract(pixel->intersection, s->cy[pixel->index]->pos);
 		projection_lenght = vector_point(cp, s->cy[pixel->index]->dir);
 		projection = vector_scale(s->cy[pixel->index]->dir, projection_lenght);
 		projection_point = vector_add(s->cy[pixel->index]->pos, projection);
-		pixel->normal = normalized(vector_subtract(pixel->intersection, projection_point));
+		pixel->normal = normalized(vector_subtract(pixel->intersection, projection_point));*/
+		pixel->normal = vector_subtract(pixel->intersection, s->sp[pixel->index]->pos);
+		pixel->normal.z = 0;
+		pixel->normal = normalized(pixel->normal);
 	}
 	else if(pixel->object == 'd')
 		pixel->normal = s->cy[pixel->index]->dir;
