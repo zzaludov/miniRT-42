@@ -12,6 +12,11 @@
 
 #include "minirt.h"
 
+double	deg_to_rad(double deg)
+{
+	return (deg * 3.141529 / 180.0);
+}
+
 int	discriminant(double a, double b, double c, double *t)
 {
 	double	discriminant;

@@ -32,16 +32,6 @@ t_coord	vector_scale(t_coord v, double sc)
 	return (v1);
 }
 
-t_coord	normalized(t_coord v)
-{
-	double	len;
-
-	len = vector_len(v);
-	if (len == 0)
-		return (v);
-	return (vector_scale(v, 1 / len));
-}
-
 t_coord	vector_add(t_coord v1, t_coord v2)
 {
 	t_coord	v;
@@ -69,16 +59,5 @@ t_coord	vector_multiply(t_coord v1, t_coord v2)
 	v.x = v1.x * v2.x;
 	v.y = v1.y * v2.y;
 	v.z = v1.z * v2.z;
-	return (v);
-}
-
-// cross_product
-t_coord	vector_produkt(t_coord v1, t_coord v2)
-{
-	t_coord	v;
-
-	v.x = v1.y * v2.z - v2.y * v1.z;
-	v.y = v1.z * v2.x - v2.z * v1.x;
-	v.z = v1.x * v2.y - v2.x * v1.y;
 	return (v);
 }

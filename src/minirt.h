@@ -170,6 +170,9 @@ t_color		diffuse(t_pixel pixel, t_ambient *ambient, t_light *light, t_coord ligh
 
 void 		pixeling(void *p);
 
+double		find_intersection(t_pointer_mlx *p, int x, int y, t_coord ray_dir);
+int			find_shadow(t_pointer_mlx *p, int x, int y, t_coord light_dir);
+
 int			intersect_plane(t_coord ray_org, t_coord ray_dir, t_plane *plane, double *t);
 int			intersect_sphere(t_coord ray_org, t_coord ray_dir, t_sphere *sp, double *t);
 int 		intersect_cylinder(t_coord ray_org, t_coord ray_dir, t_cylinder *cy, double *t);
