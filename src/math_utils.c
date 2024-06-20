@@ -23,7 +23,7 @@ int	discriminant(double a, double b, double c, double *t)
 	double	x1;
 	double	x2;
 
-	discriminant = b * b - 4 * a * c; // +c
+	discriminant = b * b - 4 * a * c; // b * b + 4 * a + c;
 
 	if (discriminant < 0)
 		return (0);
