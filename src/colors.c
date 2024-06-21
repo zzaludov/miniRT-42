@@ -45,12 +45,17 @@ t_color	light(t_color *color, t_light *l)
 	return (light);
 }
 
+// https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/diffuse-lambertian-shading.html
+
 t_color	diffuse(t_pixel pixel, t_ambient *ambient, t_light *light, t_coord light_dir)
 {
 	t_color diffuse;
 	double	i_diffuse;
-	double dot_product = vector_point(pixel.normal, light_dir);
-	
+	double dot_product = vector_point(pixel.normal, light_dir);  // -light_dir
+	       //intensity
+	// amount of light = albedo x incident light energy x N x L(ligh_dir)
+	// albedo = 0.18
+	// hitColor = hitObject->albedo / M_PI * light->intensity * light->color * std::max(0.f, hitNormal.dotProduct(L));
 	i_diffuse = ambient->ratio;
 	i_diffuse = light->brightness * dot_product;
 	//i_diffuse = 1;
