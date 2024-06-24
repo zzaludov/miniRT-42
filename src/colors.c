@@ -22,62 +22,39 @@ int32_t	pixel(t_color *color, int32_t a)
 	return (color->r << 24 | color->g << 16 | color->b << 8 | a);
 }
 
-t_color	ambient(t_color *color, t_ambient *a)
+t_shader	ambient(t_color *color, t_ambient *a)
 {
-	t_color	ambient;
+	t_shader	amb;
 
-	ambient.r = (color->r * (int32_t)(a->rgb.r * a->ratio)) / 255;
-	ambient.g = (color->g * (int32_t)(a->rgb.g * a->ratio)) / 255;
-	ambient.b = (color->b * (int32_t)(a->rgb.b * a->ratio)) / 255;
-	// ambient.r = fmin(255, ambient.r);
-    // ambient.g = fmin(255, ambient.g);
-    // ambient.b = fmin(255, ambient.b);
-	return (ambient);
+	amb.r = a->rgb.r / 255. * a->ratio * color->r / 255.;
+	amb.g = a->rgb.r / 255. * a->ratio * color->g / 255.;
+	amb.b = a->rgb.r / 255. * a->ratio * color->b / 255.;
+	return (amb);
 }
 
-t_color	light(t_color *color, t_light *l)
+t_shader	diffuse(t_pixel pixel, t_ambient *a, t_light *l, t_coord light_dir)
 {
-	t_color	light;
+	t_shader	diff;
+	double		cos;
 
-	light.r = (color->r * (int32_t)(l->rgb.r * l->brightness)) / 255;
-	light.g = (color->g * (int32_t)(l->rgb.g * l->brightness)) / 255;
-	light.b = (color->b * (int32_t)(l->rgb.b * l->brightness)) / 255;
-	return (light);
-}
-
-// https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/diffuse-lambertian-shading.html
-
-t_color	diffuse(t_pixel pixel, t_ambient *ambient, t_light *light, t_coord light_dir)
-{
-	t_color diffuse;
-	double	i_diffuse;
-	double dot_product = vector_point(pixel.normal, light_dir);  // -light_dir
-	       //intensity
-	// amount of light = albedo x incident light energy x N x L(ligh_dir)
-	// albedo = 0.18
-	// hitColor = hitObject->albedo / M_PI * light->intensity * light->color * std::max(0.f, hitNormal.dotProduct(L));
-	i_diffuse = ambient->ratio;
-	i_diffuse = light->brightness * dot_product;
-	//i_diffuse = 1;
-	//printf("%f\n", i_diffuse);
-
-	diffuse.r = (pixel.rgb.r * (int32_t)(light->rgb.r * i_diffuse)) / 255;
-	diffuse.g = (pixel.rgb.g * (int32_t)(light->rgb.g * i_diffuse)) / 255;
-	diffuse.b = (pixel.rgb.b * (int32_t)(light->rgb.b * i_diffuse)) / 255;
-	printf("%d\n", diffuse.r);
-    // Clamp values to [0, 255]
-    // diffuse.r = fmin(255, fmax(0, diffuse.r));
-    // diffuse.g = fmin(255, fmax(0, diffuse.g));
-    // diffuse.b = fmin(255, fmax(0, diffuse.b));
-
-	return (diffuse);
+	diff = ambient(&pixel.rgb, a);
+	cos = dot_product(pixel.normal, light_dir);
+	if (cos < 0)
+		cos = 0;
+	else
+	{
+		diff.r += cos * l->brightness * l->rgb.r / 255. * pixel.rgb.r / 255.;
+		diff.g += cos * l->brightness * l->rgb.g / 255. * pixel.rgb.g / 255.;
+		diff.b += cos * l->brightness * l->rgb.b / 255. * pixel.rgb.b / 255.;
+	}
+	return (diff);
 }
 
 void	alpha_screen(mlx_image_t *img)
 {
 	int	x;
 	int	y;
- 
+
 	y = 0;
 	while (y < 1000)
 	{

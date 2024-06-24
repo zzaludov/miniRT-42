@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include "minirt.h"
-#include "MLX42/MLX42.h"
 
-void	handle_esc(mlx_t* mlx)
+void	handle_esc(mlx_t *mlx)
 {
 	mlx_close_window(mlx);
 }
@@ -42,10 +41,8 @@ void	handle_mouse(mouse_key_t button,
 	t_pointer_mlx	*p;
 	int32_t			x;
 	int32_t			y;
-	int				i;
-	int static		switch_flag = 0;
+	static int		switch_flag = 0;
 
-	i = -1;
 	p = data;
 	(void)mods;
 	if (button == MLX_MOUSE_BUTTON_LEFT
@@ -65,15 +62,15 @@ void	handle_mouse(mouse_key_t button,
 		}
 		if (p->pixel[x][y].object == 'p')
 		{
-				p->scene->pl[p->pixel[x][y].index]->highlighted = 1;
-				switch_flag = 1;
-				write(1, "pointing on pl\n", 15);
+			p->scene->pl[p->pixel[x][y].index]->highlighted = 1;
+			switch_flag = 1;
+			write(1, "pointing on pl\n", 15);
 		}
 		if (p->pixel[x][y].object == 's')
 		{
-				p->scene->sp[p->pixel[x][y].index]->highlighted = 1;
-				switch_flag = 1;
-				write(1, "pointing on sp\n", 15);
+			p->scene->sp[p->pixel[x][y].index]->highlighted = 1;
+			switch_flag = 1;
+			write(1, "pointing on sp\n", 15);
 		}
 	}
 }
@@ -94,8 +91,7 @@ void	handle_keys(mlx_key_data_t keys, void *data)
 		find_highlited(p, keys);
 }
 
-void handle_keys_wrapper(struct mlx_key_data keys, void *data)
+void	handle_keys_wrapper(struct mlx_key_data keys, void *data)
 {
-    handle_keys(keys, (t_pointer_mlx *)data);
+	handle_keys(keys, (t_pointer_mlx *)data);
 }
-

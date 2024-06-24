@@ -16,14 +16,15 @@
 
 // intersection point position:
 // t = ((pl->pos - ray_org) * pl->dir) / ray_dir * pl->dir
-int	intersect_plane(t_coord ray_org, t_coord ray_dir, t_plane *plane, double *t)
+int	intersect_pl(t_coord ray_org, t_coord ray_dir, t_plane *plane, double *t)
 {
 	double	denom;
 
-	denom = vector_point(plane->dir, ray_dir);
+	plane->dir = normalized(plane->dir);
+	denom = dot_product(plane->dir, ray_dir);
 	if (fabs(denom) < EPSILON)
 		return (0);
-	*t = vector_point(vector_subtract(plane->pos, ray_org), plane->dir) / denom;
+	*t = dot_product(vector_subtract(plane->pos, ray_org), plane->dir) / denom;
 	if (*t < 0)
 		return (0);
 	return (1);
@@ -32,20 +33,18 @@ int	intersect_plane(t_coord ray_org, t_coord ray_dir, t_plane *plane, double *t)
 // a = dot (ray_dir, ray_dir)
 // b = 2 * dot (ray_org - sp->pos, ray_dir);
 // c = dot (ray_org - sp->pos, ray_org - sp->pos) - r * r
-int	intersect_sphere(t_coord ray_org, t_coord ray_dir, t_sphere *sp, double *t)
+int	intersect_sp(t_coord ray_org, t_coord ray_dir, t_sphere *sp, double *t)
 {
-	t_coord	vector;
-	double	a;
-	double	b;
-	double	c;
-	double	r;
+	t_coord			vector;
+	double			r;
+	t_discriminant	d;
 
 	vector = vector_subtract(ray_org, sp->pos);
 	r = sp->diameter / 2;
-	a = vector_point(ray_dir, ray_dir);
-	b = 2.0 * vector_point(vector, ray_dir);
-	c = vector_point(vector, vector) - r * r;
-	return (discriminant(a, b, c, t));
+	d.a = dot_product(ray_dir, ray_dir);
+	d.b = 2.0 * dot_product(vector, ray_dir);
+	d.c = dot_product(vector, vector) - r * r;
+	return (discriminant(d, t, sp->inside));
 }
 
 // intersection point:
@@ -63,25 +62,23 @@ int	intersect_disk(t_coord ray_org, t_coord ray_dir, t_cylinder *cy, double *t)
 	t_coord	p;
 	t_coord	cy_pos;
 
-	cy_pos.x = cy->pos.x;
-	cy_pos.y = cy->pos.y;
-	cy_pos.z = cy->pos.z - cy->height / 2;
+	cy_pos = create_vector(cy->pos.x, cy->pos.y, cy->pos.z);
 	pl.dir = cy->dir;
 	pl.rgb = cy->rgb;
 	pl.pos = cy_pos;
-	if (intersect_plane(ray_org, ray_dir, &pl, t))
+	if (intersect_pl(ray_org, ray_dir, &pl, t))
 	{
 		p = vector_add(ray_org, vector_scale(ray_dir, *t));
 		v = vector_add(p, vector_scale(pl.pos, -1));
-		if (sqrt(vector_point(v, v)) <= cy->diameter / 2.0)
+		if (sqrt(dot_product(v, v)) <= cy->diameter / 2.0)
 			return (1);
 	}
 	pl.pos = vector_add(cy_pos, vector_scale(cy->dir, cy->height));
-	if (intersect_plane(ray_org, ray_dir, &pl, t))
+	if (intersect_pl(ray_org, ray_dir, &pl, t))
 	{
 		p = vector_add(ray_org, vector_scale(ray_dir, *t));
 		v = vector_add(p, vector_scale(pl.pos, -1));
-		if (sqrt(vector_point(v, v)) <= cy->diameter / 2.0)
+		if (sqrt(dot_product(v, v)) <= cy->diameter / 2.0)
 			return (1);
 	}
 	return (0);
@@ -102,35 +99,29 @@ int	height_cylinder(t_coord ray_org, t_coord ray_dir, t_cylinder *cy, double *t)
 	t_coord	intersection_point;
 	double	projection;
 
-	cy_pos.x = cy->pos.x;
-	cy_pos.y = cy->pos.y;
-	cy_pos.z = cy->pos.z - cy->height / 2;
+	cy_pos = create_vector(cy->pos.x, cy->pos.y, cy->pos.z);
 	intersection_point = vector_add(ray_org, vector_scale(ray_dir, *t));
 	intersection_point = vector_subtract(intersection_point, cy_pos);
-	projection = vector_point(intersection_point, cy->dir);
+	projection = dot_product(intersection_point, cy->dir);
 	if (projection < 0 || projection > cy->height)
 		return (0);
 	return (1);
 }
 
-int	intersect_cylinder(t_coord ray_org, t_coord ray_dir, t_cylinder *cy, double *t)
+int	intersect_cy(t_coord ray_org, t_coord ray_dir, t_cylinder *cy, double *t)
 {
-	t_coord	vector;
-	t_coord	cy_pos;
-	double	a;
-	double	b;
-	double	c;
+	t_coord			vector;
+	t_coord			cy_pos;
+	t_discriminant	d;
 
-	cy_pos.x = cy->pos.x;
-	cy_pos.y = cy->pos.y;
-	cy_pos.z = cy->pos.z - cy->height / 2;
+	cy_pos = create_vector(cy->pos.x, cy->pos.y, cy->pos.z);
 	vector = vector_subtract(ray_org, cy_pos);
-	a = vector_point(ray_dir, ray_dir) - pow(vector_point(ray_dir, cy->dir), 2);
-	b = 2.0 * (vector_point(vector, ray_dir) - vector_point(vector, cy->dir)
-		* vector_point(ray_dir, cy->dir));	
-	c = vector_point(vector, vector) - pow(vector_point(vector, cy->dir), 2)
+	d.a = dot_product(ray_dir, ray_dir) - pow(dot_product(ray_dir, cy->dir), 2);
+	d.b = 2.0 * (dot_product(vector, ray_dir) - dot_product(vector, cy->dir)
+			* dot_product(ray_dir, cy->dir));
+	d.c = dot_product(vector, vector) - pow(dot_product(vector, cy->dir), 2)
 		- pow(cy->diameter / 2.0, 2);
-	if (!discriminant(a, b, c, t))
+	if (!discriminant(d, t, cy->inside))
 		return (0);
 	if (height_cylinder(ray_org, ray_dir, cy, t))
 		return (1);
