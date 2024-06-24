@@ -22,79 +22,81 @@ int32_t	pixel(t_color *color, int32_t a)
 	return (color->r << 24 | color->g << 16 | color->b << 8 | a);
 }
 
+t_color	add_light(t_color color, t_color light, float p2)
+{
+	t_color	c;
+
+	if (p2 > 1)
+		p2 = 1;
+	if (p2 < 0)
+		p2 = 0;
+	c.r = color.r * light.r * p2;
+	c.g = color.g * light.g * p2;
+	c.b = color.b * light.b * p2;
+	if (c.r > 1)
+		c.r = 1;
+	if (c.g > 1)
+		c.g = 1;
+	if (c.b > 1)
+		c.b = 1;
+	if (c.r < 0)
+		c.r = 0;
+	if (c.g < 0)
+		c.g = 0;
+	if (c.b < 0)
+		c.b = 0;
+	return (c);
+}
+
 t_color	ambient(t_color *color, t_ambient *a)
-//int32_t	ambient(t_color *color, t_ambient *a)
 {
 	t_color	ambient;
 
-	ambient.r = (color->r * (int32_t)(a->rgb.r * a->ratio)) / 255;
-	ambient.g = (color->g * (int32_t)(a->rgb.g * a->ratio)) / 255;
-	ambient.b = (color->b * (int32_t)(a->rgb.b * a->ratio)) / 255;
-	//return (pixel(&ambient, 255));  //?
-	ambient.r = fmin(255, ambient.r);
-    ambient.g = fmin(255, ambient.g);
-    ambient.b = fmin(255, ambient.b);
+	ambient.r = color->r * (int32_t)(a->rgb.r * a->ratio) / 255;
+	ambient.g = color->g * (int32_t)(a->rgb.g * a->ratio) / 255;
+	ambient.b = color->b * (int32_t)(a->rgb.b * a->ratio) / 255;
+	// ambient.r = fmin(255, ambient.r);
+    // ambient.g = fmin(255, ambient.g);
+    // ambient.b = fmin(255, ambient.b);
 	return (ambient);
-	
 }
 
 t_color	light(t_color *color, t_light *l)
-//int32_t	light(t_color *color, t_light *l)
 {
 	t_color	light;
-	//double	r2;
-	
 
 	light.r = (color->r * (int32_t)(l->rgb.r * l->brightness)) / 255;
 	light.g = (color->g * (int32_t)(l->rgb.g * l->brightness)) / 255;
 	light.b = (color->b * (int32_t)(l->rgb.b * l->brightness)) / 255;
-	//return (pixel(&light, 255));
 	return (light);
 }
 
-t_color	diffuse(t_pixel pixel, t_ambient *ambient, t_light *light, t_coord light_dir)
+t_color	diffuse(t_pixel pixel, t_ambient *a, t_light *light, t_coord light_dir)
 {
 	t_color diffuse;
-	double a = 1.0;  // Constant attenuation coefficient
-    double b = 0.1;  // Linear attenuation coefficient
-    double c = 0.01; // Quadratic attenuation coefficient
-
-	double	i_ambient;
+	t_color	amb;
 	double	i_diffuse;
-	//double	intensity;
-	double	attenuation_coefficients;
-	double dot_product = fmax(0.0, vector_point(pixel.normal, light_dir));
+
+	amb = ambient(&pixel.rgb, a);
+	double cos = dot_product(pixel.normal, light_dir);
+	//double cos = dot_product(pixel.normal, vector_scale(light_dir,-1));
 	
-	i_ambient = Ka * ambient->ratio;
-	//i_diffuse = Kd * light->brightness * vector_point(pixel.normal, light_dir);
-	i_diffuse = Kd * light->brightness * dot_product;
-	printf("i_ambient: %f i_diffuse: %f\n", i_ambient, i_diffuse);
+	//i_diffuse = ambient->ratio;
+	i_diffuse = light->brightness * cos;
+	//diffuse = add_light(pixel.rgb, light->rgb, i_diffuse);
+	//i_diffuse = 1;
+	//printf("%f\n", i_diffuse);
 
-	attenuation_coefficients = (a + b * pixel.light_dist + c * pow(pixel.light_dist, 2));
-	//intensity = (i_ambient * i_diffuse) / attenuation_coefficients;
-
-	// diffuse.r = (int32_t)(pixel.rgb.r * i_ambient + light->rgb.r * i_diffuse / attenuation_coefficients);
-    // diffuse.g = (int32_t)(pixel.rgb.g * i_ambient + light->rgb.g * i_diffuse / attenuation_coefficients);
-    // diffuse.b = (int32_t)(pixel.rgb.b * i_ambient + light->rgb.b * i_diffuse / attenuation_coefficients);
-
-	// diffuse.r = (int32_t)(pixel.rgb.r * i_diffuse  * pixel.light_dist);
-    // diffuse.g = (int32_t)(pixel.rgb.g * i_diffuse * pixel.light_dist);
-    // diffuse.b = (int32_t)(pixel.rgb.b * i_diffuse  * pixel.light_dist);
-
-	diffuse.r = (int32_t)(pixel.rgb.r * Ka * dot_product);
-    diffuse.g = (int32_t)(pixel.rgb.g * Ka * dot_product);
-    diffuse.b = (int32_t)(pixel.rgb.b * Ka * dot_product);
-
-
-	//diffuse.r = (int32_t)(pixel.rgb.r * ambient->ratio + (light->rgb.r * i_diffuse) / attenuation_coefficients);
-    //diffuse.g = (int32_t)(pixel.rgb.g * ambient->ratio + (light->rgb.g * i_diffuse) / attenuation_coefficients);
-    //diffuse.b = (int32_t)(pixel.rgb.b * ambient->ratio + (light->rgb.b * i_diffuse) / attenuation_coefficients);
-
+	diffuse.r = pixel.rgb.r * (int32_t)(light->rgb.r * i_diffuse) / 255 + amb.r;
+	diffuse.g = pixel.rgb.g * (int32_t)(light->rgb.g * i_diffuse) / 255 + amb.g;
+	diffuse.b = pixel.rgb.b * (int32_t)(light->rgb.b * i_diffuse) / 255 + amb.b;
+	// 
+	//printf("%d\n", diffuse.r);
     // Clamp values to [0, 255]
-    // diffuse.r = fmin(255, fmax(0, diffuse.r));
-    // diffuse.g = fmin(255, fmax(0, diffuse.g));
-    // diffuse.b = fmin(255, fmax(0, diffuse.b));
-
+     diffuse.r = fmin(255, fmax(0, diffuse.r));
+     diffuse.g = fmin(255, fmax(0, diffuse.g));
+     diffuse.b = fmin(255, fmax(0, diffuse.b));
+	//diffuse = pixel.rgb;
 	return (diffuse);
 }
 

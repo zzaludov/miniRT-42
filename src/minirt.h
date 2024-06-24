@@ -28,7 +28,7 @@
 // ambient coeficient
 # define Ka 0.5
 // diffuse coeficient
-# define Kd 0.7
+# define Kd 0.5
 
 
 // attributes structures
@@ -82,6 +82,7 @@ typedef struct s_sphere
 	t_coord	pos;
 	double	diameter;
 	t_color	rgb;
+	int		highlighted;
 }	t_sphere;
 
 typedef struct s_plane
@@ -89,6 +90,7 @@ typedef struct s_plane
 	t_coord	pos;
 	t_coord	dir;
 	t_color	rgb;
+	int		highlighted;
 }	t_plane;
 
 typedef struct s_cylinder
@@ -98,6 +100,7 @@ typedef struct s_cylinder
 	double	diameter;
 	double	height;
 	t_color	rgb;
+	int		highlighted;
 }	t_cylinder;
 
 // main info about scene structures
@@ -119,8 +122,8 @@ typedef struct s_pixel
 	t_color			rgb;
 	double			cam_dist;
 	double			light_dist;
-	char			object;
-	int				index;
+	char			object;   // s - sphere; c, d - cylinder; p - plane
+	int				index;    // index of object in t_scene 
 	//add
 	t_coord			normal;
 	t_coord			intersection;
@@ -138,7 +141,9 @@ typedef struct s_pointer_mlx
 
 //parse_map.c
 void		open_map(t_pointer_mlx *p);
+void	pixel_struct(t_pointer_mlx	*p);
 t_scene		*init_scene(char* file);
+void	alpha_screen(mlx_image_t *img);
 
 // main_utils
 char	*validate_name(char *scene_name);
@@ -163,7 +168,10 @@ t_color		light(t_color *color, t_light *l);
 t_color		diffuse(t_pixel pixel, t_ambient *ambient, t_light *light, t_coord light_dir);
 //int32_t		pixel(int32_t r, int32_t g, int32_t b, int32_t a);
 
-void 		pixeling(t_pointer_mlx *p);
+void 		pixeling(void *p);
+
+double		find_intersection(t_pointer_mlx *p, int x, int y, t_coord ray_dir);
+int			find_shadow(t_pointer_mlx *p, int x, int y, t_coord light_dir);
 
 int			intersect_plane(t_coord ray_org, t_coord ray_dir, t_plane *plane, double *t);
 int			intersect_sphere(t_coord ray_org, t_coord ray_dir, t_sphere *sp, double *t);
@@ -177,17 +185,23 @@ t_coord		normalized(t_coord v);
 t_coord		vector_add(t_coord v1, t_coord v2);
 t_coord		vector_subtract(t_coord v1, t_coord v2);
 t_coord		vector_multiply(t_coord v1, t_coord v2);
-t_coord		vector_produkt(t_coord v1, t_coord v2);
+t_coord		cross_product(t_coord v1, t_coord v2);
 t_coord		vector_projection(t_coord v1, t_coord v2);
 double		vector_len(t_coord v);
-double		vector_point(t_coord v1, t_coord v2);
+double		dot_product(t_coord v1, t_coord v2);
 double		deg_to_rad(double deg);
+t_coord		transformation_matrix(t_coord cam_dir, t_coord ray_dir);
 
 void	sphere_manipulation(t_scene *scene, t_sphere *sphere, mlx_key_data_t keys);
 void	plane_manipulation(t_scene *scene, t_plane *plane, mlx_key_data_t keys);
+void	cylinder_manipulation(t_scene *scene, t_cylinder *cylinder, mlx_key_data_t keys);
 void	mutate_diameter(double *diameter, keys_t key);
 void	mutate_pos( t_camera *camera, t_coord *pos, keys_t key);
 void	mutate_height(double *height, keys_t key);
+void	find_highlited(t_pointer_mlx *p, mlx_key_data_t keys);
+void	handle_keys(mlx_key_data_t keys, void *data);
+void	handle_mouse(mouse_key_t button, action_t action, modifier_key_t mods, void *data);
+void	handle_keys_wrapper(struct mlx_key_data keys, void *data);
 
 
 #endif

@@ -45,6 +45,7 @@ void	parse_objects(t_pointer_mlx *p, char **spl)
 		p->scene->sp[p->scene->n_sp] = malloc(sizeof(t_sphere));
 		p->scene->sp[p->scene->n_sp]->pos = split_xyz(spl[1]);
 		p->scene->sp[p->scene->n_sp]->diameter = ft_atof(spl[2]);
+		p->scene->sp[p->scene->n_sp]->highlighted = 0;
 		p->scene->sp[p->scene->n_sp++]->rgb = split_rgb(spl[3]);
 	}
 	else if (compare(spl[0], "pl", 2) && arrlen(spl) == 4)
@@ -52,6 +53,7 @@ void	parse_objects(t_pointer_mlx *p, char **spl)
 		p->scene->pl[p->scene->n_pl] = malloc(sizeof(t_plane));
 		p->scene->pl[p->scene->n_pl]->pos = split_xyz(spl[1]);
 		p->scene->pl[p->scene->n_pl]->dir = split_xyz(spl[2]);
+		p->scene->pl[p->scene->n_pl]->highlighted = 0;
 		p->scene->pl[p->scene->n_pl++]->rgb = split_rgb(spl[3]);
 	}
 	else if (compare(spl[0], "cy", 2) && arrlen(spl) == 6)
@@ -61,6 +63,7 @@ void	parse_objects(t_pointer_mlx *p, char **spl)
 		p->scene->cy[p->scene->n_cy]->dir = split_xyz(spl[2]);
 		p->scene->cy[p->scene->n_cy]->diameter = ft_atof(spl[3]);
 		p->scene->cy[p->scene->n_cy]->height = ft_atof(spl[4]);
+		p->scene->cy[p->scene->n_cy]->highlighted = 0;
 		p->scene->cy[p->scene->n_cy++]->rgb = split_rgb(spl[5]);
 	}
 	else
@@ -102,6 +105,7 @@ void	open_map(t_pointer_mlx* p)
 	char			*line;
 	char			**spl;
 
+	p->scene = init_scene(p->map_name);
 	fd = open(p->map_name, 0);
 	if (fd == -1)
 		ft_printf("Opening file failure."); //error 
