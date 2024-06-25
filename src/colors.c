@@ -47,6 +47,12 @@ t_shader	diffuse(t_pixel pixel, t_ambient *a, t_light *l, t_coord light_dir)
 		diff.g += cos * l->brightness * l->rgb.g / 255. * pixel.rgb.g / 255.;
 		diff.b += cos * l->brightness * l->rgb.b / 255. * pixel.rgb.b / 255.;
 	}
+	if (diff.r > 1)
+		diff.r = 1;
+	if (diff.g > 1)
+		diff.g = 1;
+	if (diff.b > 1)
+		diff.b = 1;
 	return (diff);
 }
 
