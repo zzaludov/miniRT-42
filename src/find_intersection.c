@@ -56,7 +56,7 @@ void	find_intersection_cy(t_pointer_mlx *p, t_pixel *pixel, t_coord ray_dir)
 		}
 		if (intersect_disk(p->scene->c->pos, ray_dir, p->scene->cy[i], &t))
 		{
-			if (pixel_info(pixel, t, 'c', i))
+			if (pixel_info(pixel, t, 'd', i))
 				pixel->rgb = p->scene->cy[i]->rgb;
 		}
 		i++;
