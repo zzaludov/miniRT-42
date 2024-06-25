@@ -17,13 +17,13 @@ double	deg_to_rad(double deg)
 	return (deg * 3.141529 / 180.0);
 }
 
-int	discriminant(t_discriminant d, double *t, int inside)
+int	discriminant(t_discriminant d, double *t, int *inside)
 {
 	double	discriminant;
 	double	x1;
 	double	x2;
 
-	inside = 1;
+	*inside = 0;
 	discriminant = d.b * d.b - 4 * d.a * d.c;
 	if (discriminant < 0)
 		return (0);
@@ -39,8 +39,8 @@ int	discriminant(t_discriminant d, double *t, int inside)
 			*t = x1;
 		else if (x1 < 0 || x1 > x2)
 			*t = x2;
-		if (x2 > 0 && x1 > 0)
-			inside = 0;
+		if ((x2 < 0 && x1 > 0) || (x2 > 0 && x1 < 0))
+			*inside = 1;
 	}
 	return (1);
 }

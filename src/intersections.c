@@ -44,7 +44,7 @@ int	intersect_sp(t_coord ray_org, t_coord ray_dir, t_sphere *sp, double *t)
 	d.a = dot_product(ray_dir, ray_dir);
 	d.b = 2.0 * dot_product(vector, ray_dir);
 	d.c = dot_product(vector, vector) - r * r;
-	return (discriminant(d, t, sp->inside));
+	return (discriminant(d, t, &sp->inside));
 }
 
 // intersection point:
@@ -121,7 +121,7 @@ int	intersect_cy(t_coord ray_org, t_coord ray_dir, t_cylinder *cy, double *t)
 			* dot_product(ray_dir, cy->dir));
 	d.c = dot_product(vector, vector) - pow(dot_product(vector, cy->dir), 2)
 		- pow(cy->diameter / 2.0, 2);
-	if (!discriminant(d, t, cy->inside))
+	if (!discriminant(d, t, &cy->inside))
 		return (0);
 	if (height_cylinder(ray_org, ray_dir, cy, t))
 		return (1);

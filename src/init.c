@@ -32,6 +32,7 @@ void	pixel_struct(t_pointer_mlx	*p)
 			p->pixel[i][j].light_dist = -1;
 			p->pixel[i][j].object = 0;
 			p->pixel[i][j].index = -1;
+			p->pixel[i][j].inside = 0;
 			j++;
 		}
 		i++;

@@ -22,7 +22,7 @@
 # include <math.h>
 # include "../MLX42/include/MLX42/MLX42.h"
 # include "../FT_LIBRARY/ft_library.h"
-# define EPSILON 1e-6
+# define EPSILON 1e-4
 # define WIDTH 1000
 # define HEIGHT 600
 
@@ -135,6 +135,7 @@ typedef struct s_pixel
 	double			light_dist;
 	char			object;
 	int				index;
+	int				inside;
 	t_coord			normal;
 	t_coord			intersection;
 }	t_pixel;
@@ -188,7 +189,7 @@ double		dot_product(t_coord v1, t_coord v2);
 // math utils
 double		deg_to_rad(double deg);
 t_coord		transformation_matrix(t_coord cam_dir, t_coord ray_dir);
-int			discriminant(t_discriminant d, double *t, int inside);
+int			discriminant(t_discriminant d, double *t, int *inside);
 // utils
 int			arrlen(char **array);
 void		free_memory(void **ptr);

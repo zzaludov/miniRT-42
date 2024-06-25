@@ -67,10 +67,8 @@ void	calculate_normal(t_scene *s, t_pixel *pixel)
 		pixel->normal = s->cy[pixel->index]->dir;
 	else if(pixel->object == 'p')
 		pixel->normal = s->pl[pixel->index]->dir;
-	// if ((pixel->object == 'd' || pixel->object == 'c') && s->cy[pixel->index]->inside)
-	// 	pixel->normal = vector_scale(pixel->normal, -1);
-	// if (pixel->object == 's' && s->sp[pixel->index]->inside)
-	// 	pixel->normal = vector_scale(pixel->normal, -1);
+	if (pixel->inside)
+		pixel->normal = vector_scale(pixel->normal, -1);
 }
 
 t_shader	pixel_shader(t_pointer_mlx *p, int x, int y)
