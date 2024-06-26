@@ -14,14 +14,14 @@
 
 void	pos_right(t_camera *camera, t_coord *pos)
 {
-		(void)camera;
-		pos->x += 1;
+	(void)camera;
+	pos->x += 1;
 }
 
 void	pos_left(t_camera *camera, t_coord *pos)
 {
-		(void)camera;
-		pos->x -= 1;
+	(void)camera;
+	pos->x -= 1;
 }
 
 void	pos_straight(t_camera *camera, t_coord *pos)

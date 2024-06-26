@@ -41,14 +41,13 @@ t_quat4f	ft_quat4f_unit(t_quat4f const q)
 	return (ft_quat4f(ft_vec3f_prod(q.xyz, t), q.w * t));
 }
 
-t_quat4f ft_quat4f_conjugate(t_quat4f q)
+t_quat4f	ft_quat4f_conjugate(t_quat4f q)
 {
-    t_quat4f conjugate;
+	t_quat4f	conjugate;
 
-    conjugate.xyz.x = -q.xyz.x;
-    conjugate.xyz.y = -q.xyz.y;
-    conjugate.xyz.z = -q.xyz.z;
-    conjugate.w = q.w;
-
-    return conjugate;
+	conjugate.xyz.x = -q.xyz.x;
+	conjugate.xyz.y = -q.xyz.y;
+	conjugate.xyz.z = -q.xyz.z;
+	conjugate.w = q.w;
+	return (conjugate);
 }

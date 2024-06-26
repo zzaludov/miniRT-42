@@ -86,4 +86,3 @@ int	find_shadow(t_pointer_mlx *p, t_pixel *pixel, t_coord light_dir)
 		return (0);
 	return (1);
 }
-

@@ -30,7 +30,7 @@ void	reset_highlight(t_pointer_mlx *p)
 			p->scene->sp[i]->highlighted = 0;
 }
 
-void	mouse_helper(int *switch_flag, t_pointer_mlx	*p, int32_t	x, int32_t y)
+void	mouse_helper(int *switch_flag, t_pointer_mlx *p, int32_t x, int32_t y)
 {
 	if (p->pixel[x][y].object == 'c' || p->pixel[x][y].object == 'd')
 	{

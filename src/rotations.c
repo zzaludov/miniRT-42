@@ -39,9 +39,9 @@ static bool	ft_isrotated(mlx_key_data_t keys, t_quat4f *qrot)
 	return (true);
 }
 
-void rotate_plane(mlx_key_data_t keys, t_plane *plane)
+void	rotate_plane(mlx_key_data_t keys, t_plane *plane)
 {
-    t_quat4f	qrot;
+	t_quat4f	qrot;
 	t_quat4f	rotated_dir_quat;
 	t_quat4f	dir_quat;
 
@@ -50,8 +50,9 @@ void rotate_plane(mlx_key_data_t keys, t_plane *plane)
 	dir_quat.xyz.z = plane->dir.z;
 	dir_quat.w = 0;
 	if (ft_isrotated(keys, &qrot))
-    {
-		rotated_dir_quat = ft_quat4f_unit(ft_quat4f_prod(ft_quat4f_prod(qrot, dir_quat), ft_quat4f_conjugate(qrot)));
+	{
+		rotated_dir_quat = ft_quat4f_unit(ft_quat4f_prod
+				(ft_quat4f_prod(qrot, dir_quat), ft_quat4f_conjugate(qrot)));
 		plane->dir.x = rotated_dir_quat.xyz.x;
 		plane->dir.y = rotated_dir_quat.xyz.y;
 		plane->dir.z = rotated_dir_quat.xyz.z;
@@ -59,9 +60,9 @@ void rotate_plane(mlx_key_data_t keys, t_plane *plane)
 	}
 }
 
-void rotate_cylinder(mlx_key_data_t keys, t_cylinder *cylinder)
+void	rotate_cylinder(mlx_key_data_t keys, t_cylinder *cylinder)
 {
-    t_quat4f	qrot;
+	t_quat4f	qrot;
 	t_quat4f	rotated_dir_quat;
 	t_quat4f	dir_quat;
 
@@ -71,7 +72,8 @@ void rotate_cylinder(mlx_key_data_t keys, t_cylinder *cylinder)
 	dir_quat.w = 0;
 	if (ft_isrotated(keys, &qrot))
 	{
-		rotated_dir_quat = ft_quat4f_unit(ft_quat4f_prod(ft_quat4f_prod(qrot, dir_quat), ft_quat4f_conjugate(qrot)));
+		rotated_dir_quat = ft_quat4f_unit(ft_quat4f_prod
+				(ft_quat4f_prod(qrot, dir_quat), ft_quat4f_conjugate(qrot)));
 		cylinder->dir.x = rotated_dir_quat.xyz.x;
 		cylinder->dir.y = rotated_dir_quat.xyz.y;
 		cylinder->dir.z = rotated_dir_quat.xyz.z;
@@ -94,7 +96,9 @@ void	rotate_camera(mlx_key_data_t keys, t_camera *camera)
 	{
 		if (ft_isrotated(keys, &qrot))
 		{
-			rotated_dir_quat = ft_quat4f_unit(ft_quat4f_prod(ft_quat4f_prod(qrot, dir_quat), ft_quat4f_conjugate(qrot)));
+			rotated_dir_quat = ft_quat4f_unit(ft_quat4f_prod
+					(ft_quat4f_prod(qrot, dir_quat),
+						ft_quat4f_conjugate(qrot)));
 			camera->dir.x = rotated_dir_quat.xyz.x;
 			camera->dir.y = rotated_dir_quat.xyz.y;
 			camera->dir.z = rotated_dir_quat.xyz.z;

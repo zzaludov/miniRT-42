@@ -81,7 +81,7 @@ void	parse_elements(t_pointer_mlx *p, char **spl)
 	}
 }
 
-void	open_map(t_pointer_mlx* p)
+void	open_map(t_pointer_mlx *p)
 {
 	int				fd;
 	char			*line;
@@ -90,13 +90,13 @@ void	open_map(t_pointer_mlx* p)
 	p->scene = init_scene(p->map_name);
 	fd = open(p->map_name, 0);
 	if (fd == -1)
-		ft_printf("Opening file failure."); //error 
+		ft_printf("Opening file failure.");
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
 		spl = ft_split(line, ' ');
 		parse_elements(p, spl);
-		free_memory((void**)spl);
+		free_memory((void **)spl);
 		free(line);
 		line = get_next_line(fd);
 	}

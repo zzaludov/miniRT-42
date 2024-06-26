@@ -20,5 +20,5 @@ void	print_to_exit(char *msg)
 
 void	handle_esc(t_pointer_mlx *p)
 {
-    mlx_close_window(p->mlx);
+	mlx_close_window(p->mlx);
 }

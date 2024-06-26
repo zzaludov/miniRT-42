@@ -26,7 +26,6 @@
 # define WIDTH 1000
 # define HEIGHT 600
 
-
 typedef struct s_vec3f
 {
 	double	x;
@@ -183,12 +182,18 @@ t_shader	ambient(t_color *color, t_ambient *a);
 t_shader	diffuse(t_pixel p, t_ambient *a, t_light *l, t_coord light_dir);
 void		alpha_screen(mlx_image_t *img);
 //intersection
-void		find_intersection(t_pointer_mlx *p, t_pixel *pixel, t_coord ray_dir);
-int			find_shadow(t_pointer_mlx *p, t_pixel *pixel, t_coord light_dir);
-int			intersect_pl(t_coord ray_org, t_coord ray_dir, t_plane *pl, double *t);
-int			intersect_sp(t_coord ray_org, t_coord ray_dir, t_sphere *sp, double *t);
-int			intersect_cy(t_coord ray_org, t_coord ray_dir, t_cylinder *cy, double *t);
-int			intersect_disk(t_coord ray_org, t_coord ray_dir, t_cylinder *cy, double *t);
+void		find_intersection(t_pointer_mlx *p,
+				t_pixel *pixel, t_coord ray_dir);
+int			find_shadow(t_pointer_mlx *p,
+				t_pixel *pixel, t_coord light_dir);
+int			intersect_pl(t_coord ray_org,
+				t_coord ray_dir, t_plane *pl, double *t);
+int			intersect_sp(t_coord ray_org,
+				t_coord ray_dir, t_sphere *sp, double *t);
+int			intersect_cy(t_coord ray_org,
+				t_coord ray_dir, t_cylinder *cy, double *t);
+int			intersect_disk(t_coord ray_org,
+				t_coord ray_dir, t_cylinder *cy, double *t);
 //vectors
 t_coord		create_vector(double x, double y, double z);
 t_coord		vector_scale(t_coord v, double sc);
@@ -220,15 +225,19 @@ t_color		split_rgb(char *str);
 t_coord		split_xyz(char *str);
 void		handle_esc(t_pointer_mlx *p);
 //object manipulation
-void		sphere_manipulation(t_scene *scene, t_sphere *sphere, mlx_key_data_t keys);
-void		plane_manipulation(t_scene *scene, t_plane *plane, mlx_key_data_t keys);
-void		cylinder_manipulation(t_scene *scene, t_cylinder *cylinder, mlx_key_data_t keys);
+void		sphere_manipulation(t_scene *scene, t_sphere *sphere,
+				mlx_key_data_t keys);
+void		plane_manipulation(t_scene *scene, t_plane *plane,
+				mlx_key_data_t keys);
+void		cylinder_manipulation(t_scene *scene, t_cylinder *cylinder,
+				mlx_key_data_t keys);
 void		mutate_diameter(double *diameter, keys_t key);
 void		mutate_pos( t_camera *camera, t_coord *pos, keys_t key);
 void		mutate_height(double *height, keys_t key);
 void		find_highlited(t_pointer_mlx *p, mlx_key_data_t keys);
 void		handle_keys(mlx_key_data_t keys, void *data);
-void		handle_mouse(mouse_key_t button, action_t action, modifier_key_t mods, void *data);
+void		handle_mouse(mouse_key_t button, action_t action,
+				modifier_key_t mods, void *data);
 void		handle_keys_wrapper(struct mlx_key_data keys, void *data);
 void		rotate_plane(mlx_key_data_t keys, t_plane *plane);
 void		rotate_cylinder(mlx_key_data_t keys, t_cylinder *cylinder);
