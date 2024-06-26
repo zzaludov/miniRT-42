@@ -35,7 +35,7 @@ int32_t	main(int argc, char **argv)
 	if (argc == 2)
 	{
 		p.map_name = validate_name(argv[1]);
-		validate_map(p.map_name);
+		validate_map(p.map_name, p);
 		mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
 		if (!mlx)
 			return (1);

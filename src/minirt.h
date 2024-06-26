@@ -26,6 +26,20 @@
 # define WIDTH 1000
 # define HEIGHT 600
 
+
+typedef struct s_vec3f
+{
+	double	x;
+	double	y;
+	double	z;
+}	t_vec3f;
+
+typedef struct s_quat4f
+{
+	t_vec3f	xyz;
+	float	w;
+}	t_quat4f;
+
 // attributes structures
 typedef struct s_shader
 {
@@ -157,7 +171,7 @@ t_scene		*init_scene(char *file);
 void		final_free(t_pointer_mlx *p);
 // main_utils
 char		*validate_name(char *scene_name);
-void		validate_map(char *map_name);
+void		validate_map(char *map_name, t_pointer_mlx *p);
 t_coord		split_xyz(char *str);
 t_color		split_rgb(char *str);
 // error_handling
@@ -190,11 +204,21 @@ double		dot_product(t_coord v1, t_coord v2);
 double		deg_to_rad(double deg);
 t_coord		transformation_matrix(t_coord cam_dir, t_coord ray_dir);
 int			discriminant(t_discriminant d, double *t, int *inside);
+t_quat4f	ft_quat4f_conjugate(t_quat4f q);
+t_quat4f	ft_quat4f_prod(t_quat4f const q, t_quat4f const p);
+t_quat4f	ft_quat4f_unit(t_quat4f const q);
+float		ft_vec3f_dot(t_vec3f const u, t_vec3f const v);
+t_vec3f		ft_vec3f_prod(t_vec3f const u, float const t);
+t_vec3f		ft_vec3f(float const x, float const y, float const z);
+t_quat4f	ft_quat4f(t_vec3f const xyz, float const w);
 // utils
 int			arrlen(char **array);
 void		free_memory(void **ptr);
 bool		compare(const char *s1, const char *s2, size_t n);
 double		ft_atof(const char *nptr);
+t_color		split_rgb(char *str);
+t_coord		split_xyz(char *str);
+void		handle_esc(t_pointer_mlx *p);
 //object manipulation
 void		sphere_manipulation(t_scene *scene, t_sphere *sphere, mlx_key_data_t keys);
 void		plane_manipulation(t_scene *scene, t_plane *plane, mlx_key_data_t keys);
@@ -206,5 +230,15 @@ void		find_highlited(t_pointer_mlx *p, mlx_key_data_t keys);
 void		handle_keys(mlx_key_data_t keys, void *data);
 void		handle_mouse(mouse_key_t button, action_t action, modifier_key_t mods, void *data);
 void		handle_keys_wrapper(struct mlx_key_data keys, void *data);
+void		rotate_plane(mlx_key_data_t keys, t_plane *plane);
+void		rotate_cylinder(mlx_key_data_t keys, t_cylinder *cylinder);
+void		rotate_camera(mlx_key_data_t keys, t_camera *camera);
+void		pos_right(t_camera *camera, t_coord *pos);
+void		pos_left(t_camera *camera, t_coord *pos);
+void		pos_straight(t_camera *camera, t_coord *pos);
+void		pos_back(t_camera *camera, t_coord *pos);
+void		pos_up(t_camera *camera, t_coord *pos);
+void		pos_down(t_camera *camera, t_coord *pos);
+void		move_light(mlx_key_data_t keys, void *data);
 
 #endif

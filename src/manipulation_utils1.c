@@ -12,30 +12,10 @@
 
 #include "minirt.h"
 
-void	pos_right(t_camera *camera, t_coord *pos)
+void	pos_down(t_camera *camera, t_coord *pos)
 {
-		(void)camera;
-		pos->x += 1;
-	}
-
-void	pos_left(t_camera *camera, t_coord *pos)
-{
-		(void)camera;
-		pos->x -= 1;
-}
-
-void	pos_straight(t_camera *camera, t_coord *pos)
-{
-	pos->x -= (camera->dir.x * 1);
-	pos->y -= (camera->dir.y * 1);
-	pos->z -= (camera->dir.z * 1);
-}
-
-void	pos_back(t_camera *camera, t_coord *pos)
-{
-	pos->x += (camera->dir.x * 1);
-	pos->y += (camera->dir.y * 1);
-	pos->z += (camera->dir.z * 1);
+	(void)camera;
+	pos->y -= 1;
 }
 
 void	mutate_diameter(double *diameter, keys_t key)
@@ -58,6 +38,10 @@ void	mutate_pos(t_camera *camera, t_coord *pos, keys_t key)
 		pos_straight(camera, pos);
 	if (key == MLX_KEY_S)
 		pos_back(camera, pos);
+	if (key == MLX_KEY_Q)
+		pos_up(camera, pos);
+	if (key == MLX_KEY_E)
+		pos_down(camera, pos);
 }
 
 void	mutate_height(double *height, keys_t key)

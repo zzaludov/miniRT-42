@@ -17,3 +17,8 @@ void	print_to_exit(char *msg)
 	ft_putendl_fd(msg, 2);
 	exit(1);
 }
+
+void	handle_esc(t_pointer_mlx *p)
+{
+    mlx_close_window(p->mlx);
+}

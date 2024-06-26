@@ -119,7 +119,7 @@ void	validate_elements(char **spl)
 		validate_objects(spl);
 }
 
-void	validate_map(char *map_name)
+void	validate_map(char *map_name, t_pointer_mlx *p)
 {
 	int				fd;
 	char			*line;
@@ -127,7 +127,7 @@ void	validate_map(char *map_name)
 
 	fd = open(map_name, 0);
 	if (fd == -1)
-		print_to_exit("Opening file failure.");
+		handle_esc(p);
 	line = get_next_line(fd);
 	while (line != NULL)
 	{

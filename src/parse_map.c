@@ -12,44 +12,9 @@
 
 #include "minirt.h"
 
-t_color	split_rgb(char *str)
+void	parse_objects_plane_cylinder(t_pointer_mlx *p, char **spl)
 {
-	t_color	color;
-	char	**split;
-
-	split = ft_split(str, ',');
-	color.r = ft_atoi(split[0]);
-	color.g = ft_atoi(split[1]);
-	color.b = ft_atoi(split[2]);
-	free_memory((void **) split);
-	return (color);
-}
-
-t_coord	split_xyz(char *str)
-{
-	t_coord	coord;
-	char	**split;
-
-	split = ft_split(str, ',');
-	coord.x = ft_atof(split[0]);
-	coord.y = ft_atof(split[1]);
-	coord.z = ft_atof(split[2]);
-	free_memory((void **) split);
-	return (coord);
-}
-
-void	parse_objects(t_pointer_mlx *p, char **spl)
-{
-	if (compare(spl[0], "sp", 2) && arrlen(spl) == 4)
-	{
-		p->scene->sp[p->scene->n_sp] = malloc(sizeof(t_sphere));
-		p->scene->sp[p->scene->n_sp]->pos = split_xyz(spl[1]);
-		p->scene->sp[p->scene->n_sp]->diameter = ft_atof(spl[2]);
-		p->scene->sp[p->scene->n_sp]->highlighted = 0;
-		p->scene->sp[p->scene->n_sp]->inside = 0;
-		p->scene->sp[p->scene->n_sp++]->rgb = split_rgb(spl[3]);
-	}
-	else if (compare(spl[0], "pl", 2) && arrlen(spl) == 4)
+	if (compare(spl[0], "pl", 2) && arrlen(spl) == 4)
 	{
 		p->scene->pl[p->scene->n_pl] = malloc(sizeof(t_plane));
 		p->scene->pl[p->scene->n_pl]->pos = split_xyz(spl[1]);
@@ -71,8 +36,23 @@ void	parse_objects(t_pointer_mlx *p, char **spl)
 	else
 	{
 		free_memory((void **) spl);
-		// error
+		mlx_close_window(p->mlx);
 	}
+}
+
+void	parse_objects_sphere(t_pointer_mlx *p, char **spl)
+{
+	if (compare(spl[0], "sp", 2) && arrlen(spl) == 4)
+	{
+		p->scene->sp[p->scene->n_sp] = malloc(sizeof(t_sphere));
+		p->scene->sp[p->scene->n_sp]->pos = split_xyz(spl[1]);
+		p->scene->sp[p->scene->n_sp]->diameter = ft_atof(spl[2]);
+		p->scene->sp[p->scene->n_sp]->highlighted = 0;
+		p->scene->sp[p->scene->n_sp]->inside = 0;
+		p->scene->sp[p->scene->n_sp++]->rgb = split_rgb(spl[3]);
+	}
+	else
+		parse_objects_plane_cylinder(p, spl);
 }
 
 void	parse_elements(t_pointer_mlx *p, char **spl)
@@ -97,7 +77,7 @@ void	parse_elements(t_pointer_mlx *p, char **spl)
 			p->scene->l->rgb = split_rgb(spl[3]);
 		}
 		else
-			parse_objects(p, spl);
+			parse_objects_sphere(p, spl);
 	}
 }
 
