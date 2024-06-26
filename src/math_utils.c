@@ -17,35 +17,30 @@ double	deg_to_rad(double deg)
 	return (deg * 3.141529 / 180.0);
 }
 
-int	discriminant(double a, double b, double c, double *t)
+int	discriminant(t_discriminant d, double *t, int *inside)
 {
 	double	discriminant;
 	double	x1;
 	double	x2;
 
-	discriminant = b * b - 4 * a * c;
-
+	*inside = 0;
+	discriminant = d.b * d.b - 4 * d.a * d.c;
 	if (discriminant < 0)
 		return (0);
 	else if (discriminant == 0)
-		*t = -b / (2.0 * a);
+		*t = -d.b / (2.0 * d.a);
 	else
 	{
-		x1 = (-b - sqrt(discriminant)) / (2.0 * a);
-		x2 = (-b + sqrt(discriminant)) / (2.0 * a);
-		//printf("x1:%f     x2:%f\n", x1, x2);
-		/*if (x1 < 0 && x2 < 0)
+		x1 = (-d.b - sqrt(discriminant)) / (2.0 * d.a);
+		x2 = (-d.b + sqrt(discriminant)) / (2.0 * d.a);
+		if (x1 < 0 && x2 < 0)
 			return (0);
-		else*/ if (x2 < 0 || x1 < x2)
-		{
-			//printf("x1\n");
+		else if (x2 < 0 || (x1 < x2 && x1 > 0))
 			*t = x1;
-		}
 		else if (x1 < 0 || x1 > x2)
-		{
-			//printf("x2\n");
 			*t = x2;
-		}
+		if ((x2 < 0 && x1 > 0) || (x2 > 0 && x1 < 0))
+			*inside = 1;
 	}
 	return (1);
 }
@@ -75,7 +70,7 @@ int	discriminant(double a, double b, double c, double *t)
 t_coord	transformation_matrix(t_coord cam_dir, t_coord ray_dir)
 {
 	t_coord	up;
-	t_coord right;
+	t_coord	right;
 	t_coord	forward;
 	t_coord	transform;
 
@@ -83,10 +78,11 @@ t_coord	transformation_matrix(t_coord cam_dir, t_coord ray_dir)
 	forward = normalized(cam_dir);
 	right = cross_product(up, forward);
 	up = cross_product(forward, right);
-	
-	transform.x = ray_dir.x * right.x + ray_dir.y * up.x + ray_dir.z * forward.x;
-	transform.y = ray_dir.x * right.y + ray_dir.y * up.y + ray_dir.z * forward.y;
-	transform.z = ray_dir.x * right.z + ray_dir.y * up.z + ray_dir.z * forward.z;
-
+	transform.x = ray_dir.x * right.x
+		+ ray_dir.y * up.x + ray_dir.z * forward.x;
+	transform.y = ray_dir.x * right.y
+		+ ray_dir.y * up.y + ray_dir.z * forward.y;
+	transform.z = ray_dir.x * right.z
+		+ ray_dir.y * up.z + ray_dir.z * forward.z;
 	return (transform);
 }

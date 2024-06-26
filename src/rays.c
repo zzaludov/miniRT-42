@@ -29,120 +29,110 @@
 
 //    camera_space = (pixelcamera_x, pixelcamera_y, -1)
 
-// https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-generating-camera-rays/generating-camera-rays.html
 t_coord	creating_ray(int pixel_x, int pixel_y, double fov, t_coord cam_dir)
 {
-	//t_coord	camera_space;
 	t_coord	ray_dir;
 	double	width;
 	double	height;
 	double	fov_to_height;
-//	double	phi;
-//	double	omega;
 
 	width = (double)WIDTH;
 	height = (double)HEIGHT;
 	fov_to_height = tan(deg_to_rad(fov * 0.5));
-	ray_dir.x = fov_to_height * (width / height) * (2.0 * (pixel_x + 0.5) / width - 1.0);
+	ray_dir.x = fov_to_height * (width / height)
+		* (2.0 * (pixel_x + 0.5) / width - 1.0);
 	ray_dir.y = fov_to_height * (1.0 - 2.0 * (pixel_y + 0.5) / height);
 	ray_dir.z = -1.0;
-
 	ray_dir = transformation_matrix(cam_dir, ray_dir);
-
-	/*ray_dir = normalized(ray_dir);
-	phi = acos(dir.z / sqrt(dir.x * dir.x + dir.z * dir.z));
-	omega = atan(dir.y / sqrt((dir.x * dir.x) + (dir.z * dir.z)));
-	if (dir.x < 0)
-		phi *= -1;
-	ray_dir.x = ray_dir.x * cos(phi) - ray_dir.z * sin(phi); // sin phi, cos phi, sin omega, cos omega
-	ray_dir.z = ray_dir.x * sin(phi) + ray_dir.z * cos(phi); // changed x
-	
-	ray_dir.x = ray_dir.x * (cos(omega) + ray_dir.y * sin(omega));
-	ray_dir.y = -sin(omega) * (ray_dir.x * ray_dir.x + ray_dir.z * ray_dir.z) + ray_dir.y * cos(omega);
-	ray_dir.z = ray_dir.z * (ray_dir.y * sin(omega) + cos(omega));*/
-	
-	//printf("%f", dir.x);
 	ray_dir = normalized(ray_dir);
 	return (ray_dir);
 }
 
 void	calculate_normal(t_scene *s, t_pixel *pixel)
 {
-	 t_coord	cp;
-	 double	projection_lenght;
-	 t_coord	projection;
-	 t_coord	projection_point;
+	t_coord	cp;
+	double	projection_lenght;
 
-	if(pixel->object == 's')
-		pixel->normal = normalized(vector_subtract(pixel->intersection, s->sp[pixel->index]->pos));
-		//pixel->normal = normalized(vector_subtract(s->sp[pixel->index]->pos, pixel->intersection));
-
-	else if(pixel->object == 'c')
+	if (pixel->object == 's')
+		pixel->normal = normalized
+			(vector_subtract(pixel->intersection, s->sp[pixel->index]->pos));
+	else if (pixel->object == 'c')
 	{
+		s->cy[pixel->index]->dir = normalized(s->cy[pixel->index]->dir);
 		cp = vector_subtract(pixel->intersection, s->cy[pixel->index]->pos);
-		projection_lenght = dot_product(cp, s->cy[pixel->index]->dir);
-		projection = vector_scale(s->cy[pixel->index]->dir, projection_lenght);
-		projection_point = vector_add(s->cy[pixel->index]->pos, projection);
-		pixel->normal = normalized(vector_subtract(pixel->intersection, projection_point));
-		/*pixel->normal = vector_subtract(pixel->intersection, s->sp[pixel->index]->pos);
-		pixel->normal.z = 0;
-		pixel->normal = normalized(pixel->normal);*/
-
+		projection_lenght = dot_product(s->cy[pixel->index]->dir, cp);
+		pixel->normal = vector_subtract(pixel->intersection,
+				vector_scale(s->cy[pixel->index]->dir, projection_lenght));
+		pixel->normal = normalized
+			(vector_subtract(pixel->normal, s->cy[pixel->index]->pos));
 	}
-	else if(pixel->object == 'd')
+	else if (pixel->object == 'd')
 		pixel->normal = s->cy[pixel->index]->dir;
-	else if(pixel->object == 'p')
+	else if (pixel->object == 'p')
 		pixel->normal = s->pl[pixel->index]->dir;
+	if (pixel->inside)
+		pixel->normal = vector_scale(pixel->normal, -1);
 }
 
-// https://brilliant.org/wiki/3d-coordinate-geometry-equation-of-a-line/
+t_shader	pixel_shader(t_pointer_mlx *p, int x, int y)
+{
+	t_coord		ray_dir;
+	t_coord		light_dir;
+	t_shader	shader;
+
+	ray_dir = creating_ray(x, y, p->scene->c->fov, p->scene->c->dir);
+	find_intersection(p, &p->pixel[x][y], ray_dir);
+	p->pixel[x][y].intersection
+		= vector_scale(ray_dir, p->pixel[x][y].cam_dist);
+	p->pixel[x][y].intersection
+		= vector_add(p->pixel[x][y].intersection, p->scene->c->pos);
+	calculate_normal(p->scene, &p->pixel[x][y]);
+	light_dir = vector_subtract(p->scene->l->pos, p->pixel[x][y].intersection);
+	p->pixel[x][y].light_dist = vector_len(light_dir);
+	light_dir = normalized(light_dir);
+	if (p->pixel[x][y].index != -1
+		&& find_shadow(p, &p->pixel[x][y], light_dir))
+		shader = diffuse(p->pixel[x][y], p->scene->a, p->scene->l, light_dir);
+	else
+		shader = ambient(&p->pixel[x][y].rgb, p->scene->a);
+	return (shader);
+}
+
+void	clear_pixels(t_pointer_mlx *p)
+{
+	int				x;
+
+	x = 0;
+	while (x < WIDTH)
+		free(p->pixel[x++]);
+	free(p->pixel);
+	pixel_struct(p);
+}
 
 void	pixeling(void *param)
 {
-	t_pointer_mlx *p;
-	t_coord	ray_dir;
-	t_coord	light_dir;
-	int	i;
+	t_pointer_mlx	*p;
+	t_color			final;
+	t_shader		shader;
+	int				x;
+	int				y;
 
+	y = 0;
 	p = param;
-	double	t;
-	t_color	final;
-
-	i = 0;
-	while (i < WIDTH)
-		free(p->pixel[i++]);
-	free(p->pixel);
-	pixel_struct(p);
-	for (int y = 0; y < HEIGHT; y++) {
-		for (int x = 0; x < WIDTH; x++) {
-			ray_dir = creating_ray(x, y, p->scene->c->fov, p->scene->c->dir);
-			t = find_intersection(p, x, y, ray_dir);
-
-			// intersection point in 3D coordinates
-			p->pixel[x][y].intersection = vector_scale(ray_dir, t);
-			p->pixel[x][y].intersection = vector_add(p->pixel[x][y].intersection, p->scene->c->pos);
-			calculate_normal(p->scene, &p->pixel[x][y]);
-			
-			//light_dir = vector_subtract(p->pixel[x][y].intersection, p->scene->l->pos);
-			light_dir = vector_subtract(p->scene->l->pos, p->pixel[x][y].intersection);
-			
-			p->pixel[x][y].light_dist = vector_len(light_dir);
-			//p->pixel[x][y].light_dist = vector_point(light_dir, light_dir);
-			light_dir = normalized(light_dir);
-
-			if (dot_product(p->pixel[x][y].normal, light_dir) < 0) 
-        		p->pixel[x][y].normal = vector_scale(p->pixel[x][y].normal, -1);
-			
-			/*if (p->pixel[x][y].index != -1)
-				final = p->pixel[x][y].rgb;
-			else if (dot_product(ray_dir, p->pixel[x][y].normal) > 0)
-				final = ambient(&p->pixel[x][y].rgb, p->scene->a);
-			else */if (p->pixel[x][y].index != -1 && find_shadow(p, x, y, light_dir))
-				final = diffuse(p->pixel[x][y], p->scene->a, p->scene->l, light_dir);
-			else
-				final = ambient(&p->pixel[x][y].rgb, p->scene->a);
+	open_map(p);
+	clear_pixels(p);
+	while (y < HEIGHT)
+	{
+		x = 0;
+		while (x < WIDTH)
+		{
+			shader = pixel_shader(p, x, y);
+			final.r = shader.r * 255;
+			final.g = shader.g * 255;
+			final.b = shader.b * 255;
 			mlx_put_pixel(p->img, x, y, pixel(&final, 255));
-
+			x++;
 		}
+		y++;
 	}
 }

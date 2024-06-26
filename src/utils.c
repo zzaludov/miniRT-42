@@ -60,9 +60,9 @@ static void	validate(const char *nptr)
 
 	i = 0;
 	while ((nptr[i] > 8 && nptr[i] < 14) || nptr[i] == 32
-			|| nptr[i] == 45 || nptr[i] == 43 || (nptr[i] > 47 && nptr[i] < 58)
-			|| nptr[i] == '.')
-			i++;
+		|| nptr[i] == 45 || nptr[i] == 43 || (nptr[i] > 47 && nptr[i] < 58)
+		|| nptr[i] == '.')
+		i++;
 	if (nptr[i] != '\0')
 	{
 		ft_putendl_fd("Invalid input", 2);

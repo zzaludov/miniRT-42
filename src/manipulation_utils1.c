@@ -12,24 +12,44 @@
 
 #include "minirt.h"
 
-void	sphere_manipulation(t_scene *scene, t_sphere *sphere,
-	mlx_key_data_t keys)
+void	pos_down(t_camera *camera, t_coord *pos)
 {
-	mutate_diameter(&sphere->diameter, keys.key);
-	mutate_pos(scene->c, &sphere->pos, keys.key);
+	(void)camera;
+	pos->y -= 1;
 }
 
-void	plane_manipulation(t_scene *scene, t_plane *plane, mlx_key_data_t keys)
+void	mutate_diameter(double *diameter, keys_t key)
 {
-	mutate_pos(scene->c, &plane->pos, keys.key);
-	rotate_plane(keys, plane);
+	if (key == MLX_KEY_4)
+		*diameter += 0.25;
+	else if (key == MLX_KEY_3 && *diameter > 0.26)
+		*diameter -= 0.25;
+	else if (key == MLX_KEY_3)
+		return ;
 }
 
-void	cylinder_manipulation(t_scene *scene, t_cylinder *cylinder,
-	mlx_key_data_t keys)
+void	mutate_pos(t_camera *camera, t_coord *pos, keys_t key)
 {
-	mutate_diameter(&cylinder->diameter, keys.key);
-	mutate_height(&cylinder->height, keys.key);
-	mutate_pos(scene->c, &cylinder->pos, keys.key);
-	rotate_cylinder(keys, cylinder);
+	if (key == MLX_KEY_D)
+		pos_right(camera, pos);
+	if (key == MLX_KEY_A)
+		pos_left(camera, pos);
+	if (key == MLX_KEY_W)
+		pos_straight(camera, pos);
+	if (key == MLX_KEY_S)
+		pos_back(camera, pos);
+	if (key == MLX_KEY_Q)
+		pos_up(camera, pos);
+	if (key == MLX_KEY_E)
+		pos_down(camera, pos);
+}
+
+void	mutate_height(double *height, keys_t key)
+{
+	if (key == MLX_KEY_2)
+		*height += 1;
+	else if (key == MLX_KEY_1 && *height > 1)
+		*height -= 1;
+	else if (key == MLX_KEY_1)
+		return ;
 }
