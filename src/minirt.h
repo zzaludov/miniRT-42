@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   miniRT.h                                           :+:      :+:    :+:   */
+/*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zzaludov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 20:08:16 by zzaludov          #+#    #+#             */
-/*   Updated: 2023/11/27 20:08:42 by zzaludov         ###   ########.fr       */
+/*   Updated: 2024/06/27 19:10:58 by nandroso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,10 +168,12 @@ void		open_map(t_pointer_mlx *p);
 void		pixel_struct(t_pointer_mlx	*p);
 t_scene		*init_scene(char *file);
 void		final_free(t_pointer_mlx *p);
+void		validate_ambient(char **spl);
+void		validate_xyz(char **spl, char flag);
 // main_utils
 char		*validate_name(char *scene_name);
 void		validate_map(char *map_name, t_pointer_mlx *p);
-t_coord		split_xyz(char *str);
+t_coord		split_xyz(char *str, char flag);
 t_color		split_rgb(char *str);
 // error_handling
 void		print_to_exit(char *msg);
@@ -221,8 +223,6 @@ int			arrlen(char **array);
 void		free_memory(void **ptr);
 bool		compare(const char *s1, const char *s2, size_t n);
 double		ft_atof(const char *nptr);
-t_color		split_rgb(char *str);
-t_coord		split_xyz(char *str);
 void		handle_esc(t_pointer_mlx *p);
 //object manipulation
 void		sphere_manipulation(t_scene *scene, t_sphere *sphere,
