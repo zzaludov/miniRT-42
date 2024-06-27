@@ -249,5 +249,6 @@ void		pos_back(t_camera *camera, t_coord *pos);
 void		pos_up(t_camera *camera, t_coord *pos);
 void		pos_down(t_camera *camera, t_coord *pos);
 void		move_light(mlx_key_data_t keys, void *data);
+void		move_camera(mlx_key_data_t keys, t_camera *camera);
 
 #endif

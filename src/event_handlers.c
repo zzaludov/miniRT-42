@@ -92,7 +92,9 @@ void	handle_keys(mlx_key_data_t keys, void *data)
 			|| keys.key == MLX_KEY_N || keys.key == MLX_KEY_M
 			|| keys.key == MLX_KEY_Q || keys.key == MLX_KEY_E
 			|| keys.key == MLX_KEY_UP || keys.key == MLX_KEY_DOWN
-			|| keys.key == MLX_KEY_LEFT || keys.key == MLX_KEY_RIGHT))
+			|| keys.key == MLX_KEY_LEFT || keys.key == MLX_KEY_RIGHT
+			|| keys.key == MLX_KEY_Z || keys.key == MLX_KEY_X
+			|| keys.key == MLX_KEY_C || keys.key == MLX_KEY_V))
 		find_highlited(p, keys);
 }
 

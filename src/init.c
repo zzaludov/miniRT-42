@@ -49,7 +49,7 @@ int	find_objs(char *file, char *obj)
 	objs = 0;
 	fd = open(file, 0);
 	if (fd == -1)
-		ft_printf("Opening file failure."); // error
+		ft_printf("Opening file failure.");
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
@@ -68,9 +68,6 @@ t_scene	*init_scene(char *file)
 {
 	t_scene	*scene;
 
-	if (find_objs(file, "A") != 1 || find_objs(file, "C") != 1
-		|| find_objs(file, "L") != 1)
-		ft_printf("Element missing"); // error, call it differently than element
 	scene = malloc (sizeof(t_scene));
 	scene->a = malloc (sizeof(t_ambient));
 	scene->c = malloc (sizeof(t_camera));

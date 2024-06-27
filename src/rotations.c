@@ -81,6 +81,18 @@ void	rotate_cylinder(mlx_key_data_t keys, t_cylinder *cylinder)
 	}
 }
 
+void	move_camera(mlx_key_data_t keys, t_camera *camera)
+{
+	if (keys.key == MLX_KEY_X)
+		pos_right(camera, &camera->pos);
+	if (keys.key == MLX_KEY_Z)
+		pos_left(camera, &camera->pos);
+	if (keys.key == MLX_KEY_C)
+		pos_straight(camera, &camera->pos);
+	if (keys.key == MLX_KEY_V)
+		pos_back(camera, &camera->pos);
+}
+
 void	rotate_camera(mlx_key_data_t keys, t_camera *camera)
 {
 	t_quat4f	qrot;

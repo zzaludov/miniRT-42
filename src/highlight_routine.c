@@ -17,7 +17,7 @@ void	move_light(mlx_key_data_t keys, void *data)
 	t_pointer_mlx	*p;
 
 	p = data;
-	if (keys.key == MLX_KEY_APOSTROPHE || keys.key == MLX_KEY_O
+	if (keys.key == MLX_KEY_APOSTROPHE || keys.key == MLX_KEY_P
 		|| keys.key == MLX_KEY_L || keys.key == MLX_KEY_SEMICOLON)
 	{
 		if (keys.key == MLX_KEY_APOSTROPHE)
@@ -48,4 +48,5 @@ void	find_highlited(t_pointer_mlx *p, mlx_key_data_t keys)
 		if (p->scene->sp[i]->highlighted == 1)
 			sphere_manipulation(p->scene, p->scene->sp[i], keys);
 	rotate_camera(keys, p->scene->c);
+	move_camera(keys, p->scene->c);
 }
