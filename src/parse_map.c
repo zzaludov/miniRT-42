@@ -94,7 +94,8 @@ void	open_map(t_pointer_mlx *p)
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
-		spl = ft_split(line, ' ');
+		spl = ft_split(line, '\n');
+		spl = ft_split(spl[0], ' ');
 		parse_elements(p, spl);
 		free_memory((void **)spl);
 		free(line);
