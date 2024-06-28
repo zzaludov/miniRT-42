@@ -121,8 +121,7 @@ void	validate_map(char *map_name, t_pointer_mlx *p)
 			line = get_next_line(fd);
 			continue ;
 		}
-		spl = ft_split(line, '\n');
-		spl = ft_split(spl[0], ' ');
+		spl = ft_split(line, ' ');
 		validate_elements(spl);
 		free_memory((void **)spl);
 		free(line);
