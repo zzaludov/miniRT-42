@@ -22,17 +22,17 @@ static bool	ft_isrotated(mlx_key_data_t keys, t_quat4f *qrot)
 		ft_vec3f(0.0F, 0.0F, 1.0F)
 	};
 
-	if (keys.key == MLX_KEY_J || keys.key == MLX_KEY_DOWN)
+	if (keys.key == MLX_KEY_J || keys.key == MLX_KEY_KP_5)
 		*qrot = ft_quat4f(ft_vec3f_prod(standard[0], sinf(nhagl)), cosf(nhagl));
-	else if (keys.key == MLX_KEY_U || keys.key == MLX_KEY_UP)
+	else if (keys.key == MLX_KEY_U || keys.key == MLX_KEY_KP_8)
 		*qrot = ft_quat4f(ft_vec3f_prod(standard[0], sinf(hagl)), cosf(hagl));
-	else if (keys.key == MLX_KEY_K || keys.key == MLX_KEY_RIGHT)
+	else if (keys.key == MLX_KEY_K || keys.key == MLX_KEY_KP_6)
 		*qrot = ft_quat4f(ft_vec3f_prod(standard[1], sinf(nhagl)), cosf(nhagl));
-	else if (keys.key == MLX_KEY_H || keys.key == MLX_KEY_LEFT)
+	else if (keys.key == MLX_KEY_H || keys.key == MLX_KEY_KP_4)
 		*qrot = ft_quat4f(ft_vec3f_prod(standard[1], sinf(hagl)), cosf(hagl));
-	else if (keys.key == MLX_KEY_N)
+	else if (keys.key == MLX_KEY_KP_7)
 		*qrot = ft_quat4f(ft_vec3f_prod(standard[2], sinf(nhagl)), cosf(nhagl));
-	else if (keys.key == MLX_KEY_M)
+	else if (keys.key == MLX_KEY_KP_9)
 		*qrot = ft_quat4f(ft_vec3f_prod(standard[2], sinf(hagl)), cosf(hagl));
 	else
 		return (false);
@@ -91,6 +91,10 @@ void	move_camera(mlx_key_data_t keys, t_camera *camera)
 		pos_straight(camera, &camera->pos);
 	if (keys.key == MLX_KEY_V)
 		pos_back(camera, &camera->pos);
+	if (keys.key == MLX_KEY_LEFT_SHIFT)
+		pos_up(camera, &camera->pos);
+	if (keys.key == MLX_KEY_LEFT_CONTROL)
+		pos_down(camera, &camera->pos);
 }
 
 void	rotate_camera(mlx_key_data_t keys, t_camera *camera)
@@ -103,8 +107,9 @@ void	rotate_camera(mlx_key_data_t keys, t_camera *camera)
 	dir_quat.xyz.y = camera->dir.y;
 	dir_quat.xyz.z = camera->dir.z;
 	dir_quat.w = 0;
-	if (keys.key == MLX_KEY_LEFT || keys.key == MLX_KEY_RIGHT
-		|| keys.key == MLX_KEY_UP || keys.key == MLX_KEY_DOWN)
+	if (keys.key == MLX_KEY_KP_4 || keys.key == MLX_KEY_KP_5
+		|| keys.key == MLX_KEY_KP_6 || keys.key == MLX_KEY_KP_7
+		|| keys.key == MLX_KEY_KP_8 || keys.key == MLX_KEY_KP_9)
 	{
 		if (ft_isrotated(keys, &qrot))
 		{

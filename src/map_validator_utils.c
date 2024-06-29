@@ -35,4 +35,5 @@ void	validate_xyz(char **spl, char flag)
 	t_coord	pos;
 
 	pos = split_xyz(spl[1], flag);
+	(void)pos;
 }

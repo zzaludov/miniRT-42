@@ -98,8 +98,26 @@ void	handle_keys(mlx_key_data_t keys, void *data)
 		find_highlited(p, keys);
 }
 
+void	change_brightness(mlx_key_data_t keys, void *data)
+{
+	t_pointer_mlx	*p;
+
+	p = data;
+	if (keys.key == MLX_KEY_RIGHT_BRACKET || keys.key == MLX_KEY_BACKSLASH)
+	{
+		if (keys.key == MLX_KEY_RIGHT_BRACKET)
+			if (p->scene->l->brightness > 0.1)
+				p->scene->l->brightness -= 0.1;
+		if (keys.key == MLX_KEY_BACKSLASH)
+			if (p->scene->l->brightness < 0.9)
+				p->scene->l->brightness += 0.1;
+	}
+}
+
+
 void	handle_keys_wrapper(struct mlx_key_data keys, void *data)
 {
 	handle_keys(keys, (t_pointer_mlx *)data);
 	move_light(keys, (t_pointer_mlx *)data);
+	change_brightness(keys, (t_pointer_mlx *)data);
 }

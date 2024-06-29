@@ -18,7 +18,8 @@ void	move_light(mlx_key_data_t keys, void *data)
 
 	p = data;
 	if (keys.key == MLX_KEY_APOSTROPHE || keys.key == MLX_KEY_P
-		|| keys.key == MLX_KEY_L || keys.key == MLX_KEY_SEMICOLON)
+		|| keys.key == MLX_KEY_L || keys.key == MLX_KEY_SEMICOLON
+		|| keys.key == MLX_KEY_O || keys.key == MLX_KEY_LEFT_BRACKET)
 	{
 		if (keys.key == MLX_KEY_APOSTROPHE)
 			pos_right(p->scene->c, &(p->scene->l->pos));
@@ -28,6 +29,10 @@ void	move_light(mlx_key_data_t keys, void *data)
 			pos_straight(p->scene->c, &(p->scene->l->pos));
 		if (keys.key == MLX_KEY_SEMICOLON)
 			pos_back(p->scene->c, &(p->scene->l->pos));
+		if (keys.key == MLX_KEY_O)
+			pos_down(p->scene->c, &(p->scene->l->pos));
+		if (keys.key == MLX_KEY_LEFT_BRACKET)
+			pos_up(p->scene->c, &(p->scene->l->pos));
 	}
 }
 

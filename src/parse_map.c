@@ -86,6 +86,7 @@ void	open_map(t_pointer_mlx *p)
 	int				fd;
 	char			*line;
 	char			**spl;
+	// char			*tmp;
 
 	p->scene = init_scene(p->map_name);
 	fd = open(p->map_name, 0);
@@ -94,8 +95,11 @@ void	open_map(t_pointer_mlx *p)
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
-		spl = ft_split(line, '\n');
-		spl = ft_split(spl[0], ' ');
+		// spl = ft_split(line, '\n');
+		// tmp = spl[0];
+		// free_memory((void **)spl);
+		spl = ft_split(line, ' ');
+		
 		parse_elements(p, spl);
 		free_memory((void **)spl);
 		free(line);
